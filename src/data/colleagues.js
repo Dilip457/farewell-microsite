@@ -17,8 +17,8 @@
 // ------------------------------------------------------------------
 
 export const author = {
-  name: "Robert Kennedy",
-  label: "ROBERT KENNEDY",
+  name: "Dilip Sanjay",
+  label: "Dilip Sanjay",
 };
 
 export const colleagues = [
