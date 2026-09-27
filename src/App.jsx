@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import CinematicBackground from "./components/CinematicBackground";
 import HeroSection from "./components/HeroSection";
@@ -12,15 +12,9 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const reduced = useReducedMotion();
 
-  // lock page scroll while the modal is open (extra guard alongside modal logic)
-  useEffect(() => {
-    if (!selected) return undefined;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [selected]);
+  // NOTE: the body scroll lock lives ONLY in PersonalNoteModal.
+  // A duplicate lock here fought with it (wrong restore order) and
+  // left the page frozen after closing a note.
 
   return (
     <div className="relative min-h-screen">
