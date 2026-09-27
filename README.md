@@ -39,6 +39,19 @@ No passwords, no per-person links, nothing to distribute.
 > the source. For a farewell among colleagues that is normally exactly
 > the right trade-off.
 
+## Author preview — reviewing every note
+
+To see **all cards at once** (skip the gate), append `#preview` to the
+site URL — a fragment known only to the author and never sent to anyone:
+
+```
+https://<your-site>/#preview
+```
+
+This shows the full grid of every colleague card; open each to review its
+note. An “Exit author preview” link sits in the footer. Visitors using the
+plain link are unaffected.
+
 ## Local development
 
 ```bash
