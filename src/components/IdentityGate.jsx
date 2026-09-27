@@ -91,8 +91,8 @@ export default function IdentityGate({ onIdentify }) {
               </h1>
 
               <p className="mb-7 mt-5 text-sm leading-relaxed text-[rgba(255,255,255,0.5)]">
-                I left a note for each person on this journey. Find your name
-                to read the one written for you.
+               Every interaction here has meant a lot to me. Please type or select your name to 
+                find a personal note of appreciation written for you.
               </p>
 
               <label htmlFor="gate-search" className="sr-only">
