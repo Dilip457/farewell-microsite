@@ -1,14 +1,29 @@
 import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import CinematicBackground from "./components/CinematicBackground";
+import IdentityGate from "./components/IdentityGate";
 import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
-import { author } from "./data/colleagues";
+import { author, colleagues } from "./data/colleagues";
 
 const EASE = [0.22, 1, 0.36, 1];
 
+const IDENTITY_KEY = "farewell-identity-id";
+
+/** Restore a returning visitor's chosen identity (same tab session). */
+function loadIdentity() {
+  try {
+    const raw = sessionStorage.getItem(IDENTITY_KEY);
+    if (!raw) return null;
+    return colleagues.find((c) => String(c.id) === raw) || null;
+  } catch {
+    return null;
+  }
+}
+
 export default function App() {
+  const [identity, setIdentity] = useState(loadIdentity);
   const [selected, setSelected] = useState(null);
   const reduced = useReducedMotion();
 
@@ -16,31 +31,79 @@ export default function App() {
   // A duplicate lock here fought with it (wrong restore order) and
   // left the page frozen after closing a note.
 
+  const identify = (person) => {
+    try {
+      sessionStorage.setItem(IDENTITY_KEY, String(person.id));
+    } catch {
+      /* private mode — gate just re-appears next visit */
+    }
+    setIdentity(person);
+  };
+
+  const resetIdentity = () => {
+    try {
+      sessionStorage.removeItem(IDENTITY_KEY);
+    } catch {
+      /* ignore */
+    }
+    setSelected(null);
+    setIdentity(null);
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* background pauses its particle field while a note modal is open */}
       <CinematicBackground paused={Boolean(selected)} />
 
-      <main className="relative z-10">
-        <HeroSection />
-        <PeopleSection onSelect={setSelected} />
-      </main>
+      <AnimatePresence mode="wait">
+        {identity ? (
+          <motion.div
+            key="experience"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            <main className="relative z-10">
+              <HeroSection />
+              <PeopleSection identity={identity} onSelect={setSelected} />
+            </main>
 
-      {/* closing */}
-      <motion.footer
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={reduced ? { duration: 0.6 } : { duration: 1.6, ease: EASE }}
-        className="relative z-10 px-6 pb-16 pt-4 text-center sm:pb-20"
-      >
-        <p className="mx-auto max-w-md text-sm font-light leading-relaxed tracking-wide text-[rgba(255,255,255,0.45)]">
-          Thank you for being part of the journey.
-        </p>
-        <p className="mt-5 text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.28)]">
-          With appreciation — {author.name}
-        </p>
-      </motion.footer>
+            {/* closing */}
+            <motion.footer
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={reduced ? { duration: 0.6 } : { duration: 1.6, ease: EASE }}
+              className="relative z-10 px-6 pb-16 pt-4 text-center sm:pb-20"
+            >
+              <p className="mx-auto max-w-md text-sm font-light leading-relaxed tracking-wide text-[rgba(255,255,255,0.45)]">
+                Thank you for being part of the journey.
+              </p>
+              <p className="mt-5 text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.28)]">
+                With appreciation — {author.name}
+              </p>
+              <button
+                type="button"
+                onClick={resetIdentity}
+                className="mx-auto mt-10 block text-[10px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.22)] transition-colors duration-300 hover:text-[rgba(255,255,255,0.5)]"
+              >
+                Not you? Switch person
+              </button>
+            </motion.footer>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="gate"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            <IdentityGate onIdentify={identify} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <PersonalNoteModal person={selected} onClose={() => setSelected(null)} />
     </div>
