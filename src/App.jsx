@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import CinematicBackground from "./components/CinematicBackground";
 import IdentityGate from "./components/IdentityGate";
@@ -10,6 +10,7 @@ import { author, colleagues } from "./data/colleagues";
 const EASE = [0.22, 1, 0.36, 1];
 
 const IDENTITY_KEY = "farewell-identity-id";
+const PREVIEW_HASH = "#preview";
 
 /** Restore a returning visitor's chosen identity (same tab session). */
 function loadIdentity() {
@@ -25,11 +26,22 @@ function loadIdentity() {
 export default function App() {
   const [identity, setIdentity] = useState(loadIdentity);
   const [selected, setSelected] = useState(null);
+  const [preview, setPreview] = useState(
+    () => window.location.hash === PREVIEW_HASH
+  );
   const reduced = useReducedMotion();
 
   // NOTE: the body scroll lock lives ONLY in PersonalNoteModal.
   // A duplicate lock here fought with it (wrong restore order) and
   // left the page frozen after closing a note.
+
+  // Author preview mode: appending #preview to the URL (known only to
+  // the author) skips the identity gate and shows EVERY card.
+  useEffect(() => {
+    const onHash = () => setPreview(window.location.hash === PREVIEW_HASH);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   const identify = (person) => {
     try {
@@ -50,13 +62,53 @@ export default function App() {
     setIdentity(null);
   };
 
+  const exitPreview = () => {
+    if (window.location.hash) window.location.hash = "";
+    setPreview(false);
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* background pauses its particle field while a note modal is open */}
       <CinematicBackground paused={Boolean(selected)} />
 
       <AnimatePresence mode="wait">
-        {identity ? (
+        {preview ? (
+          <motion.div
+            key="preview"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            <main className="relative z-10">
+              <HeroSection />
+              <PeopleSection preview onSelect={setSelected} />
+            </main>
+
+            <motion.footer
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={reduced ? { duration: 0.6 } : { duration: 1.6, ease: EASE }}
+              className="relative z-10 px-6 pb-16 pt-4 text-center sm:pb-20"
+            >
+              <p className="mx-auto max-w-md text-sm font-light leading-relaxed tracking-wide text-[rgba(255,255,255,0.45)]">
+                Thank you for being part of the journey.
+              </p>
+              <p className="mt-5 text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.28)]">
+                With appreciation — {author.name}
+              </p>
+              <button
+                type="button"
+                onClick={exitPreview}
+                className="mx-auto mt-10 block text-[10px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.22)] transition-colors duration-300 hover:text-[rgba(255,255,255,0.5)]"
+              >
+                Exit author preview
+              </button>
+            </motion.footer>
+          </motion.div>
+        ) : identity ? (
           <motion.div
             key="experience"
             initial={{ opacity: 0 }}
