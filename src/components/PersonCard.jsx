@@ -13,8 +13,9 @@ const GLOWS = {
  *  - soft light that follows the cursor inside the card
  *  - hover: subtle lift toward the viewer, "View note" reveal
  *  - keyboard focus mirrors the hover affordance
+ *  - `featured`: the single personalized card (no number, "Open your note")
  */
-export default function PersonCard({ person, onSelect }) {
+export default function PersonCard({ person, onSelect, featured = false }) {
   const reduced = useReducedMotion();
 
   const rotateX = useMotionValue(0);
@@ -72,19 +73,23 @@ export default function PersonCard({ person, onSelect }) {
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-haspopup="dialog"
       aria-label={`Open personal note for ${person.name}`}
-      className={`glass-card tint-${person.accent} group flex h-[190px] w-full cursor-pointer flex-col justify-between p-6 text-left sm:h-[200px] lg:h-[210px]`}
+      className={`glass-card tint-${person.accent} group flex w-full cursor-pointer flex-col justify-between p-6 text-left ${
+        featured ? "h-[220px] sm:h-[240px]" : "h-[190px] sm:h-[200px] lg:h-[210px]"
+      }`}
     >
       {/* cursor-follow light */}
       <span className="card-light" aria-hidden="true" />
 
       {/* top row — sequence number + arrow */}
       <div className="relative flex items-start justify-between">
-        <span
-          aria-hidden="true"
-          className="select-none text-[11px] font-medium tracking-[0.3em] text-[rgba(255,255,255,0.22)]"
-        >
-          {person.number}
-        </span>
+        {featured ? null : (
+          <span
+            aria-hidden="true"
+            className="select-none text-[11px] font-medium tracking-[0.3em] text-[rgba(255,255,255,0.22)]"
+          >
+            {person.number}
+          </span>
+        )}
         <svg
           aria-hidden="true"
           width="14"
@@ -113,7 +118,7 @@ export default function PersonCard({ person, onSelect }) {
           ))}
         </h3>
         <span className="view-note mt-3 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-[rgba(160,195,255,0.9)]">
-          View note
+          {featured ? "Open your note" : "View note"}
           <svg width="12" height="10" viewBox="0 0 12 10" fill="none" aria-hidden="true">
             <path
               d="M1 5h9.5M7 1.5L10.5 5 7 8.5"
