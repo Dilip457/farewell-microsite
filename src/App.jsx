@@ -18,7 +18,8 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen">
-      <CinematicBackground />
+      {/* background pauses its particle field while a note modal is open */}
+      <CinematicBackground paused={Boolean(selected)} />
 
       <main className="relative z-10">
         <HeroSection />

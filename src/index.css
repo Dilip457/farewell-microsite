@@ -53,11 +53,12 @@ body {
 
 .glass-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.035);
+  /* no backdrop-filter on purpose: 17 live blurs recomputed on every
+     scroll frame caused major jank; the glass look is kept via the
+     translucent fill + border + inner highlight instead */
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
@@ -72,7 +73,7 @@ body {
 .glass-card:hover,
 .glass-card:focus-visible {
   border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.075);
   box-shadow:
     0 34px 80px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
@@ -144,8 +145,8 @@ body {
 .orb {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(90px);
-  mix-blend-mode: screen;
+  /* gradients already fade to transparent — a live blur filter here
+     forced a re-filter every animation frame; removed for performance */
   will-change: transform;
 }
 
@@ -166,8 +167,6 @@ body {
 
 .light-leak {
   position: absolute;
-  filter: blur(110px);
-  mix-blend-mode: screen;
   will-change: transform, opacity;
 }
 

@@ -7,20 +7,32 @@ import { useEffect, useRef } from "react";
  *   1. near-black base gradient
  *   2. slowly drifting atmospheric gradient orbs
  *   3. cinematic light leaks
- *   4. canvas particle / dust field (depth layers)
+ *   4. canvas particle / dust field (depth layers, pausable)
  *   5. cursor-reactive glow (desktop only)
  *   6. film grain
  *   7. vignette
+ *
+ * Performance notes:
+ *   - no live `filter: blur()` on animated layers (gradients already fade);
+ *     a blur filter forces a re-filter every animation frame
+ *   - the particle canvas stops painting while `paused` (modal open), so
+ *     nothing under the modal's backdrop-filter changes and the blur is
+ *     not recomputed every frame
  */
 
 const PARTICLE_TINTS = [
-  "rgba(170, 200, 255, A)",
-  "rgba(205, 185, 255, A)",
-  "rgba(255, 255, 255, A)",
+  "rgba(170, 200, 255, 1)",
+  "rgba(205, 185, 255, 1)",
+  "rgba(255, 255, 255, 1)",
 ];
 
-function ParticleField() {
+function ParticleField({ paused = false }) {
   const canvasRef = useRef(null);
+  const pausedRef = useRef(paused);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,7 +45,7 @@ function ParticleField() {
     let w = 0;
     let h = 0;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
 
     const makeParticle = () => {
       const depth = Math.random(); // 0 = far, 1 = near
@@ -42,12 +54,11 @@ function ParticleField() {
         y: Math.random() * h,
         r: 0.4 + depth * 1.6,
         baseAlpha: 0.08 + depth * 0.42,
-        alpha: 0,
         vy: -(0.05 + depth * 0.22), // near particles drift a little faster
         swayAmp: 6 + depth * 18,
         swaySpeed: 0.00015 + depth * 0.0003,
         phase: Math.random() * Math.PI * 2,
-        tint: PARTICLE_TINTS[(Math.random() * PARTICLE_TINTS.length) | 0],
+        color: PARTICLE_TINTS[(Math.random() * PARTICLE_TINTS.length) | 0],
       };
     };
 
@@ -61,7 +72,7 @@ function ParticleField() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const mobile = w < 768;
-      const count = mobile ? 34 : 90;
+      const count = mobile ? 30 : 70;
       particles = Array.from({ length: count }, makeParticle);
     };
 
@@ -72,7 +83,7 @@ function ParticleField() {
       for (const p of particles) {
         const twinkle = 0.6 + 0.4 * Math.sin(p.phase + t * p.swaySpeed * 4);
         ctx.globalAlpha = p.baseAlpha * twinkle;
-        ctx.fillStyle = p.tint.replace("A", "1");
+        ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x + Math.sin(t * p.swaySpeed + p.phase) * p.swayAmp, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
@@ -81,15 +92,19 @@ function ParticleField() {
     };
 
     const step = () => {
-      t += 16;
-      for (const p of particles) {
-        p.y += p.vy;
-        if (p.y < -8) {
-          p.y = h + 8;
-          p.x = Math.random() * w;
+      // while paused (modal open) skip all work — no repaint means the
+      // page above doesn't have to recompute its backdrop blur
+      if (!pausedRef.current) {
+        t += 16;
+        for (const p of particles) {
+          p.y += p.vy;
+          if (p.y < -8) {
+            p.y = h + 8;
+            p.x = Math.random() * w;
+          }
         }
+        draw();
       }
-      draw();
       raf = requestAnimationFrame(step);
     };
 
@@ -98,7 +113,6 @@ function ParticleField() {
 
     if (reduced) {
       // draw one static frame, no animation
-      for (const p of particles) p.phase = 0;
       draw();
     } else {
       raf = requestAnimationFrame(step);
@@ -160,19 +174,17 @@ function CursorGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none absolute h-[700px] w-[700px] rounded-full opacity-[0.05]"
+      className="pointer-events-none absolute h-[700px] w-[700px] rounded-full opacity-[0.06]"
       style={{
         background:
-          "radial-gradient(circle, rgba(140,175,255,0.55), rgba(140,175,255,0) 60%)",
-        filter: "blur(40px)",
-        mixBlendMode: "screen",
+          "radial-gradient(circle, rgba(140,175,255,0.5), rgba(140,175,255,0) 60%)",
         willChange: "transform",
       }}
     />
   );
 }
 
-export default function CinematicBackground() {
+export default function CinematicBackground({ paused = false }) {
   return (
     <div
       aria-hidden="true"
@@ -189,7 +201,7 @@ export default function CinematicBackground() {
         }}
       />
 
-      {/* Layer 2 — atmospheric orbs */}
+      {/* Layer 2 — atmospheric orbs (soft gradients, no live blur) */}
       <div
         className="orb orb-a h-[46vw] w-[46vw] opacity-[0.16]"
         style={{
@@ -219,7 +231,7 @@ export default function CinematicBackground() {
         }}
       />
 
-      {/* Layer 3 — cinematic light leaks */}
+      {/* Layer 3 — cinematic light leaks (soft gradients, no live blur) */}
       <div
         className="light-leak leak-a h-[34vw] w-[52vw] opacity-[0.14]"
         style={{
@@ -242,7 +254,7 @@ export default function CinematicBackground() {
       />
 
       {/* Layer 4 — particles */}
-      <ParticleField />
+      <ParticleField paused={paused} />
 
       {/* Layer 5 — cursor-reactive light */}
       <CursorGlow />
