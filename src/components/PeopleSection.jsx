@@ -1,6 +1,5 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import PersonCard from "./PersonCard";
-import { colleagues } from "../data/colleagues";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -10,17 +9,21 @@ const heading = {
   transition: { duration: 1.4, ease: EASE },
 };
 
-export default function PeopleSection({ onSelect }) {
-  const reduced = useReducedMotion();
+/**
+ * PeopleSection — the personalized reveal.
+ * After the identity gate, each visitor sees only THEIR card.
+ */
+export default function PeopleSection({ identity, onSelect }) {
+  const firstName = identity.name.split(" ")[0];
 
   return (
     <section
       id="people"
-      aria-label="People I will remember"
+      aria-label="A note for you"
       className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-40 pt-32 sm:px-10 sm:pt-44 lg:px-14"
     >
       <motion.p {...heading} className="section-label mb-8">
-        02 / People I will remember
+        02 / A note for you
       </motion.p>
 
       <motion.h2
@@ -30,39 +33,27 @@ export default function PeopleSection({ onSelect }) {
       >
         A few words,
         <br />
-        for each of you.
+        for you, {firstName}.
       </motion.h2>
 
       <motion.p
         {...heading}
         transition={{ ...heading.transition, delay: 0.3 }}
-        className="mb-20 max-w-md text-sm leading-relaxed text-[rgba(255,255,255,0.5)] sm:mb-28"
+        className="mb-16 max-w-md text-sm leading-relaxed text-[rgba(255,255,255,0.5)] sm:mb-24"
       >
-        Every card below holds a personal note. Open yours.
+        Of everything I'm leaving behind, this one is yours alone. Open it
+        whenever you're ready.
       </motion.p>
 
-      {/* Responsive grid — 1 column mobile, 2 tablet, 3 desktop */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {colleagues.map((person, i) => (
-          <motion.div
-            key={person.id}
-            initial={
-              reduced
-                ? { opacity: 0 }
-                : { opacity: 0, y: 70, filter: "blur(6px)" }
-            }
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{
-              duration: 1.1,
-              delay: (i % 3) * 0.12,
-              ease: EASE,
-            }}
-          >
-            <PersonCard person={person} onSelect={() => onSelect(person)} />
-          </motion.div>
-        ))}
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 70, filter: "blur(6px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 1.2, delay: 0.25, ease: EASE }}
+        className="mx-auto w-full max-w-md"
+      >
+        <PersonCard person={identity} onSelect={() => onSelect(identity)} featured />
+      </motion.div>
     </section>
   );
 }
