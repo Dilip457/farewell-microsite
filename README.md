@@ -20,6 +20,25 @@ to change names, personal messages, ordering or per-card accent
 (`blue` / `violet` / `pink`). Cards and modals are generated automatically from
 that list — no component edits needed.
 
+## How the identity gate works
+
+Everyone receives the **same link**. On open, the site asks *"Which one
+are you?"* — each colleague picks their own name (with an optional search
+box), and from then on the page shows **only their card and their note**.
+No passwords, no per-person links, nothing to distribute.
+
+- The choice is remembered for the browser session (refresh keeps it);
+  a small “Not you? Switch person” link sits in the footer.
+- **Optional soft verification:** in `src/data/colleagues.js` you can add
+  `pin` + `pinHint` per person (e.g. last 4 digits of their phone —
+  something they already know). If set, the gate asks that one question
+  before opening their note. Nothing is ever sent to them.
+
+> Note: GitHub Pages is static hosting, so this is a friendly privacy
+> gate, not cryptographic security — a determined person could inspect
+> the source. For a farewell among colleagues that is normally exactly
+> the right trade-off.
+
 ## Local development
 
 ```bash

@@ -1,6 +1,19 @@
 // ------------------------------------------------------------------
 // Colleague data — edit this file to change the people, messages,
 // order or accents. The UI generates every card from this list.
+//
+// Identity gate: everyone opens the same link and picks their own
+// name, then sees only their own card and note.
+//
+// OPTIONAL soft verification — add these two fields to a person if you
+// want a quick personal check before their note opens (something they
+// already know, so nothing is ever sent to them):
+//
+//   pin: "1234",                              // the expected value
+//   pinHint: "Last 4 digits of your phone",    // shown as the question
+//
+// If `pin` is omitted (the default), picking the name opens the note
+// straight away.
 // ------------------------------------------------------------------
 
 export const author = {
