@@ -82,8 +82,12 @@ export default function PersonalNoteModal({ person, onClose }) {
             aria-hidden="true"
             className="absolute inset-0"
             style={{
+              // multi-stop falloff + a noise overlay on top dithers away
+              // gradient banding that a two-stop gradient shows on dark bg
               background:
-                "radial-gradient(circle at 50% 40%, rgba(40,60,110,0.35), rgba(2,2,5,0.75) 70%)",
+                "radial-gradient(circle at 50% 40%, rgba(48,68,122,0.32) 0%, " +
+                "rgba(30,40,68,0.45) 32%, rgba(12,16,30,0.62) 58%, " +
+                "rgba(4,5,10,0.76) 78%)",
               backdropFilter: "blur(14px)",
               WebkitBackdropFilter: "blur(14px)",
             }}
@@ -91,7 +95,17 @@ export default function PersonalNoteModal({ person, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: EASE }}
-          />
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                opacity: 0.05,
+                backgroundImage:
+                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+              }}
+            />
+          </motion.div>
 
           {/* panel — floats toward the viewer out of depth */}
           <motion.div
