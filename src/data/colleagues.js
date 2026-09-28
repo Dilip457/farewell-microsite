@@ -24,7 +24,7 @@ export const author = {
 export const colleagues = [
   {
     id: 1,
-    name: "Aftab Khan",
+    name: "Bharath Kumar Reddy",
     number: "01",
     accent: "blue",
     message:
@@ -32,7 +32,7 @@ export const colleagues = [
   },
   {
     id: 2,
-    name: "Sachin Yadav",
+    name: "Deepthi Manne",
     number: "02",
     accent: "violet",
     message:
@@ -40,7 +40,7 @@ export const colleagues = [
   },
   {
     id: 3,
-    name: "Pooja Bhati",
+    name: "Krishna Kumar",
     number: "03",
     accent: "pink",
     message:
@@ -48,7 +48,7 @@ export const colleagues = [
   },
   {
     id: 4,
-    name: "Anum Shaikh",
+    name: "Nagaraju Rudravaram",
     number: "04",
     accent: "blue",
     message:
@@ -56,7 +56,7 @@ export const colleagues = [
   },
   {
     id: 5,
-    name: "Ramji Sharma",
+    name: "Niranjan Manikanta Alla",
     number: "05",
     accent: "violet",
     message:
@@ -64,7 +64,7 @@ export const colleagues = [
   },
   {
     id: 6,
-    name: "Rohan Gunjal",
+    name: "Rajasekhar Siddamsetty",
     number: "06",
     accent: "pink",
     message:
@@ -72,7 +72,7 @@ export const colleagues = [
   },
   {
     id: 7,
-    name: "Rucha Bhawarthe",
+    name: "Rasoju Sampath Kumar",
     number: "07",
     accent: "blue",
     message:
@@ -80,7 +80,7 @@ export const colleagues = [
   },
   {
     id: 8,
-    name: "Shishant Nayak",
+    name: "Ravivarma Nampelli",
     number: "08",
     accent: "violet",
     message:
@@ -88,7 +88,7 @@ export const colleagues = [
   },
   {
     id: 9,
-    name: "Payal Gole",
+    name: "Sai Kiran Vura",
     number: "09",
     accent: "pink",
     message:
@@ -96,7 +96,7 @@ export const colleagues = [
   },
   {
     id: 10,
-    name: "Deepshikha Singh",
+    name: "Sai Harshitha Reddy Pendyala",
     number: "10",
     accent: "blue",
     message:
@@ -104,7 +104,7 @@ export const colleagues = [
   },
   {
     id: 11,
-    name: "Gargi Kadu",
+    name: "Suresh Kumar Mandapaka",
     number: "11",
     accent: "violet",
     message:
@@ -112,7 +112,7 @@ export const colleagues = [
   },
   {
     id: 12,
-    name: "Sahil Bhoir",
+    name: "Syed Ehteshamuddin",
     number: "12",
     accent: "pink",
     message:
@@ -120,7 +120,7 @@ export const colleagues = [
   },
   {
     id: 13,
-    name: "Ashwini Pawaskar",
+    name: "Tapasya Chittineni",
     number: "13",
     accent: "blue",
     message:
@@ -128,7 +128,7 @@ export const colleagues = [
   },
   {
     id: 14,
-    name: "Samiaa Shaikh",
+    name: "Venkata Alamuru",
     number: "14",
     accent: "violet",
     message:
@@ -136,7 +136,7 @@ export const colleagues = [
   },
   {
     id: 15,
-    name: "Omkar Sonawane",
+    name: "Venkatesh Patha",
     number: "15",
     accent: "pink",
     message:
@@ -144,7 +144,7 @@ export const colleagues = [
   },
   {
     id: 16,
-    name: "Ajay Bhivsane",
+    name: "Karthik Kalyan Dhavala",
     number: "16",
     accent: "blue",
     message:
@@ -152,10 +152,18 @@ export const colleagues = [
   },
   {
     id: 17,
-    name: "Sanket Jadhav",
+    name: "Videet Visvadiya",
     number: "17",
     accent: "violet",
     message:
       "Sanket, I'm glad our paths crossed on this journey. Your spirit and the effort you put into everything you do made a lasting impression. Thank you for the moments, big and small, along the way. Wishing you success, happiness and exciting new experiences in everything that comes next.",
+  },
+  {
+    id: 18,
+    name: "Vishnu Radhakrishnan",
+    number: "18",
+    accent: "Pink",
+    message:
+      "Vishnu, I'm glad our paths crossed on this journey. Your spirit and the effort you put into everything you do made a lasting impression. Thank you for the moments, big and small, along the way. Wishing you success, happiness and exciting new experiences in everything that comes next.",
   },
 ];
