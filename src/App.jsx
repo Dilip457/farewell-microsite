@@ -135,10 +135,15 @@ export default function App() {
               <p className="mt-5 text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.28)]">
                 With appreciation — {author.name}
               </p>
+              {/* Hide-and-seek switch: nearly invisible at rest, gently
+                  fades in on hover/focus — findable if you picked the wrong
+                  card, invisible to someone just reading their note. */}
               <button
                 type="button"
                 onClick={resetIdentity}
-                className="mx-auto mt-10 block text-[10px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.22)] transition-colors duration-300 hover:text-[rgba(255,255,255,0.5)]"
+                title="Switch person"
+                aria-label="Switch person — if you picked the wrong card"
+                className="mx-auto mt-10 block text-[9px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.42)] opacity-[0.07] transition-opacity duration-700 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[rgba(125,184,255,0.4)]"
               >
                 Not you? Switch person
               </button>
