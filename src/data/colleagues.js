@@ -27,8 +27,17 @@ export const colleagues = [
     name: "Bharath Kumar Reddy",
     number: "01",
     accent: "blue",
-    message:
-      "Aftab, it was a real pleasure working alongside you. Your steady, easygoing way of handling things made even the stressful days feel lighter. Thank you for the good conversations and the reliability you brought every single time. Wishing you growth, success and everything good that lies ahead of you.",
+    message: Hi Bharath Anna,
+First of all, if I ever let you down at any point while working together, I'm really sorry for that. 😊
+I had the opportunity to work with you on FTM-RRA and ODL activities, and I learned a lot from you during that time. One thing I always admired was how you remained calm and composed while handling different situations. You always encouraged me to take ownership of my work, step up, and lead activities whenever possible.
+
+The advice you gave me about taking accountability, being responsible for tasks, and making things happen has stayed with me. Those lessons have helped me grow, and I am truly thankful for that.
+
+I honestly believe you have strong leadership skills, Anna. The way you guided me at times, support, and handle challenges is something I respect a lot. I am sure these qualities will take you far, and I wish you a very successful and happy career ahead.
+
+Thank you, Anna, for all the guidance, support, and valuable lessons.
+
+Wishing you all the very best for the future!
   },
   {
     id: 2,
