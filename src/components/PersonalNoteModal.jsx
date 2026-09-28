@@ -25,6 +25,30 @@ function CloseIcon({ className }) {
 }
 
 /**
+ * Renders a personal message: paragraph breaks preserved,
+ * <bold>…</bold> segments emphasized.
+ */
+function RichText({ text }) {
+  const parts = text.split(/(<bold>[\s\S]*?<\/bold>)/g).filter(Boolean);
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.startsWith("<bold>") ? (
+          <strong
+            key={i}
+            className="font-medium text-[rgba(245,245,245,0.95)]"
+          >
+            {part.replace(/<\/?bold>/g, "")}
+          </strong>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+}
+
+/**
  * PersonalNoteModal — the emotional centerpiece.
  * Floating glass panel with a deep 3D entrance, cyan accent line,
  * four ways to close (X, Close, Escape, click-outside),
@@ -171,9 +195,9 @@ export default function PersonalNoteModal({ person, onClose }) {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.32, ease: EASE }}
-              className="max-w-2xl text-[15px] font-light leading-[1.85] tracking-wide text-[rgba(245,245,245,0.82)] sm:text-[17px]"
+              className="max-w-2xl whitespace-pre-line text-[15px] font-light leading-[1.85] tracking-wide text-[rgba(245,245,245,0.82)] sm:text-[17px]"
             >
-              {person.message}
+              <RichText text={person.message} />
             </motion.p>
 
             {/* footer */}
