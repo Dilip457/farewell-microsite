@@ -18,7 +18,7 @@ const GLOWS = {
  *  - `sealed`: everyone else's card in the personalized grid — dimmed,
  *    locked, not clickable; the words stay private to their person
  */
-export default function PersonCard({ person, onSelect, featured = false, sealed = false }) {
+export default function PersonCard({ person, onSelect, featured = false, sealed = false, actionLabel }) {
   const reduced = useReducedMotion();
 
   const rotateX = useMotionValue(0);
@@ -167,7 +167,7 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
       <div className="relative">
         {nameBlock}
         <span className="view-note mt-3 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-[rgba(160,195,255,0.9)]">
-          {featured ? "Open your note" : "View note"}
+          {featured ? "Open your note" : actionLabel || "View note"}
           <svg width="12" height="10" viewBox="0 0 12 10" fill="none" aria-hidden="true">
             <path
               d="M1 5h9.5M7 1.5L10.5 5 7 8.5"

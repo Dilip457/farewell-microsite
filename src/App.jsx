@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import CinematicBackground from "./components/CinematicBackground";
-import IdentityGate from "./components/IdentityGate";
 import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
+import PinPrompt from "./components/PinPrompt";
 import MessageForAuthor from "./components/MessageForAuthor";
 import { author, colleagues } from "./data/colleagues";
 import { startSpinningFavicon } from "./lib/spinningFavicon";
@@ -30,6 +30,7 @@ function loadIdentity() {
 export default function App() {
   const [identity, setIdentity] = useState(loadIdentity);
   const [selected, setSelected] = useState(null);
+  const [pinPending, setPinPending] = useState(null);
   const [preview, setPreview] = useState(
     () => window.location.hash === PREVIEW_HASH
   );
@@ -46,7 +47,7 @@ export default function App() {
   // left the page frozen after closing a note.
 
   // Author preview mode: appending #preview to the URL (known only to
-  // the author) skips the identity gate and shows EVERY card.
+  // the author) skips the pick wall and shows EVERY card open.
   useEffect(() => {
     const onHash = () => setPreview(window.location.hash === PREVIEW_HASH);
     window.addEventListener("hashchange", onHash);
@@ -57,9 +58,17 @@ export default function App() {
     try {
       localStorage.setItem(IDENTITY_KEY, String(person.id));
     } catch {
-      /* private mode — gate just re-appears next visit */
+      /* private mode — the pick wall just re-appears next visit */
     }
+    setPinPending(null);
     setIdentity(person);
+    setSelected(person); // open their note straight away
+  };
+
+  // clicking a card on the pick wall — pin-protected people confirm first
+  const pick = (person) => {
+    if (person.pin) setPinPending(person);
+    else identify(person);
   };
 
   const resetIdentity = () => {
@@ -69,6 +78,7 @@ export default function App() {
       /* ignore */
     }
     setSelected(null);
+    setPinPending(null);
     setIdentity(null);
   };
 
@@ -118,7 +128,7 @@ export default function App() {
               </button>
             </motion.footer>
           </motion.div>
-        ) : identity ? (
+        ) : (
           <motion.div
             key="experience"
             initial={{ opacity: 0 }}
@@ -126,14 +136,17 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: EASE }}
           >
+            {/* no identity yet: the wall itself is the gate — click your
+                card ("This is me") to reveal your note. With an identity:
+                everyone sealed except your glowing card. */}
             <main className="relative z-10">
               <HeroSection />
-              <PeopleSection identity={identity} onSelect={setSelected} />
+              <PeopleSection identity={identity} onSelect={setSelected} onPick={pick} />
             </main>
 
             {/* quiet box below the cards — replies to the author.
                 Hidden until the Google Form is configured (feedback.js). */}
-            <MessageForAuthor person={identity} />
+            {identity ? <MessageForAuthor person={identity} /> : null}
 
             {/* closing */}
             <motion.footer
@@ -152,29 +165,28 @@ export default function App() {
               {/* Hide-and-seek switch: nearly invisible at rest, gently
                   fades in on hover/focus — findable if you picked the wrong
                   card, invisible to someone just reading their note. */}
-              <button
-                type="button"
-                onClick={resetIdentity}
-                title="Switch person"
-                aria-label="Switch person — if you picked the wrong card"
-                className="mx-auto mt-10 block text-[9px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.42)] opacity-[0.07] transition-opacity duration-700 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[rgba(125,184,255,0.4)]"
-              >
-                Not you? Switch person
-              </button>
+              {identity && (
+                <button
+                  type="button"
+                  onClick={resetIdentity}
+                  title="Switch person"
+                  aria-label="Switch person — if you picked the wrong card"
+                  className="mx-auto mt-10 block text-[9px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.42)] opacity-[0.07] transition-opacity duration-700 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[rgba(125,184,255,0.4)]"
+                >
+                  Not you? Switch person
+                </button>
+              )}
             </motion.footer>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="gate"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: EASE }}
-          >
-            <IdentityGate onIdentify={identify} />
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* optional pin check, only for pin-protected colleagues */}
+      <PinPrompt
+        person={pinPending}
+        onSuccess={() => identify(pinPending)}
+        onCancel={() => setPinPending(null)}
+      />
 
       <PersonalNoteModal person={selected} onClose={() => setSelected(null)} />
     </div>
