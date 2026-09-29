@@ -110,7 +110,7 @@ export default function IdentityGate({ onIdentify }) {
                 className="w-full rounded-2xl border border-[rgba(255,255,255,0.14)] bg-[rgba(255,255,255,0.03)] px-5 py-3.5 text-[15px] text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-[rgba(255,255,255,0.3)] focus:border-[rgba(125,184,255,0.5)]"
               />
 
-              <div className="mt-5 grid max-h-[38vh] grid-cols-2 gap-2.5 overflow-y-auto pr-1 sm:grid-cols-3">
+              <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                 {filtered.map((c) => (
                   <button key={c.id} type="button" className={chipClass} onClick={() => choose(c)}>
                     {c.name}
