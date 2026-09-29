@@ -32,6 +32,11 @@ export default function MessageForAuthor({ person }) {
       const body = new URLSearchParams();
       if (feedback.nameEntry) body.set(feedback.nameEntry, person.name);
       body.set(feedback.messageEntry, text.trim());
+      // hidden fields a real browser submit includes — without them some
+      // forms record the response but drop the answers
+      body.set("fvv", "1");
+      body.set("pageHistory", "0");
+      body.set("submissionTimestamp", "-1");
       // no-cors: the response is opaque, but Google records the entry
       await fetch(feedback.formAction, {
         method: "POST",
