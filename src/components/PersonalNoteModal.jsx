@@ -184,7 +184,7 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
 
             <motion.div
               aria-hidden="true"
-              className="accent-line mt-6 mb-8 sm:mb-10"
+              className="accent-line mt-6 mb-8 shrink-0 sm:mb-10"
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
               transition={{ duration: 1, delay: 0.4, ease: EASE }}

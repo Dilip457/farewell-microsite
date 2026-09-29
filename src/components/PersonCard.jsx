@@ -58,11 +58,22 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
     rotateY.set(0);
   };
 
+  // one word per line, but 4+ word names wrap into two balanced lines
+  // so they fit the fixed card height (nothing gets clipped)
+  const words = person.name.split(" ");
+  const nameLines =
+    words.length > 3
+      ? [
+          words.slice(0, Math.ceil(words.length / 2)).join(" "),
+          words.slice(Math.ceil(words.length / 2)).join(" "),
+        ]
+      : words;
+
   const nameBlock = (
     <h3 className="card-name text-[#f5f5f5]">
-      {person.name.split(" ").map((part, i) => (
+      {nameLines.map((line, i) => (
         <span key={i} className="block">
-          {part}
+          {line}
         </span>
       ))}
     </h3>
