@@ -13,8 +13,6 @@ const heading = {
 
 const sectionClass =
   "relative z-10 mx-auto w-full max-w-6xl px-6 pb-40 pt-32 sm:px-10 sm:pt-44 lg:px-14";
-// identity view: no bottom padding — the reply box follows the card wall
-const sectionClassTight = sectionClass.replace("pb-40", "pb-0");
 
 /**
  * PeopleSection — three modes:
@@ -162,7 +160,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   const firstName = identity.name.split(" ")[0];
 
   return (
-    <section id="people" aria-label="A note for you" className={sectionClassTight}>
+    <section id="people" aria-label="A note for you" className={sectionClass}>
       <motion.p {...heading} className="section-label mb-8">
         02 / A note for you
       </motion.p>

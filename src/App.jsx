@@ -5,7 +5,6 @@ import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
 import PinPrompt from "./components/PinPrompt";
-import MessageForAuthor from "./components/MessageForAuthor";
 import { author, colleagues } from "./data/colleagues";
 import { startSpinningFavicon } from "./lib/spinningFavicon";
 
@@ -144,10 +143,6 @@ export default function App() {
               <PeopleSection identity={identity} onSelect={setSelected} onPick={pick} />
             </main>
 
-            {/* quiet box below the cards — replies to the author.
-                Hidden until the Google Form is configured (feedback.js). */}
-            {identity ? <MessageForAuthor person={identity} /> : null}
-
             {/* closing */}
             <motion.footer
               initial={{ opacity: 0 }}
@@ -188,7 +183,13 @@ export default function App() {
         onCancel={() => setPinPending(null)}
       />
 
-      <PersonalNoteModal person={selected} onClose={() => setSelected(null)} />
+      {/* the reply box lives INSIDE the note modal (see MessageForAuthor);
+          enableReply is off in author preview so the review view stays clean */}
+      <PersonalNoteModal
+        person={selected}
+        onClose={() => setSelected(null)}
+        enableReply={!preview}
+      />
     </div>
   );
 }

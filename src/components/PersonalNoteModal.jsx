@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { author } from "../data/colleagues";
+import MessageForAuthor from "./MessageForAuthor";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -54,7 +55,7 @@ function RichText({ text }) {
  * four ways to close (X, Close, Escape, click-outside),
  * background scroll lock and focus management.
  */
-export default function PersonalNoteModal({ person, onClose }) {
+export default function PersonalNoteModal({ person, onClose, enableReply = true }) {
   const reduced = useReducedMotion();
   const panelRef = useRef(null);
   const closeBtnRef = useRef(null);
@@ -126,7 +127,7 @@ export default function PersonalNoteModal({ person, onClose }) {
               style={{
                 opacity: 0.05,
                 backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E\")",
               }}
             />
           </motion.div>
@@ -199,6 +200,10 @@ export default function PersonalNoteModal({ person, onClose }) {
             >
               <RichText text={person.message} />
             </motion.p>
+
+            {/* reply box — inside the note itself, so nobody has to scroll
+                the page below to find it. Skipped in author preview. */}
+            {enableReply && <MessageForAuthor person={person} />}
 
             {/* footer */}
             <motion.div

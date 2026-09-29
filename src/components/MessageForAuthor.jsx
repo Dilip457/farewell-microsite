@@ -7,11 +7,12 @@ import { feedback } from "../data/feedback";
 const EASE = [0.22, 1, 0.36, 1];
 
 /**
- * MessageForAuthor — a quiet box below the cards where the reader can
- * leave a note back for the author.
+ * MessageForAuthor — the reply box, embedded at the end of the personal
+ * note modal so it is seen the moment the note is read (people rarely
+ * scroll past their card on the wall below).
  *
  * Submits to the Google Form configured in src/data/feedback.js. The
- * reader's name (already known from the identity gate) is attached
+ * reader's name (already known from the card they picked) is attached
  * automatically, so replies arrive pre-attributed in the author's
  * responses sheet. Renders nothing until the form is configured.
  */
@@ -57,20 +58,19 @@ export default function MessageForAuthor({ person }) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 1.1, ease: EASE }}
-      className="relative z-10 mx-auto mt-14 w-full max-w-xl px-2 sm:px-0"
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.1, delay: 0.6, ease: EASE }}
+      className="relative z-10 mt-12 w-full"
       aria-label="Leave a message for the author"
     >
-      <div className="rounded-3xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] p-7 sm:p-9">
+      <div className="rounded-3xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] p-7 sm:p-8">
         <p className="section-label mb-5">Plot twist</p>
 
-        <h2 className="text-[clamp(26px,4vw,36px)] font-semibold leading-[1.02] tracking-[-0.04em] text-[#f5f5f5]">
+        <h3 className="text-[clamp(22px,3.4vw,30px)] font-semibold leading-[1.05] tracking-[-0.04em] text-[#f5f5f5]">
           The floor
           <br />
           is yours.
-        </h2>
+        </h3>
 
         {sent ? (
           <div className="mt-6 rounded-2xl border border-[rgba(125,184,255,0.25)] bg-[rgba(125,184,255,0.06)] px-6 py-8 text-center">
@@ -90,7 +90,7 @@ export default function MessageForAuthor({ person }) {
             </label>
             <textarea
               id="reply-message"
-              rows={5}
+              rows={4}
               value={text}
               maxLength={2000}
               onChange={(e) => setText(e.target.value)}
