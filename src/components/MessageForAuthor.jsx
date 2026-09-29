@@ -53,16 +53,16 @@ export default function MessageForAuthor({ person }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 1.1, ease: EASE }}
-      className="relative z-10 mx-auto mt-20 w-full max-w-xl px-2 sm:px-0"
+      className="relative z-10 mx-auto mt-14 w-full max-w-xl px-2 sm:px-0"
       aria-label="Leave a message for the author"
     >
       <div className="rounded-3xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] p-7 sm:p-9">
-        <p className="section-label mb-5">Before you go</p>
+        <p className="section-label mb-5">Plot twist</p>
 
         <h2 className="text-[clamp(26px,4vw,36px)] font-semibold leading-[1.02] tracking-[-0.04em] text-[#f5f5f5]">
-          Say something
+          The floor
           <br />
-          back.
+          is yours.
         </h2>
 
         {sent ? (
@@ -75,7 +75,7 @@ export default function MessageForAuthor({ person }) {
         ) : (
           <>
             <p className="mb-6 mt-5 text-sm leading-relaxed text-[rgba(255,255,255,0.5)]">
-              If anything here meant something to you, leave a few words for {author.name}. Every message gets read.
+              If anything here meant something to you, {author.name} would love to hear a few words back.
             </p>
 
             <label htmlFor="reply-message" className="sr-only">
