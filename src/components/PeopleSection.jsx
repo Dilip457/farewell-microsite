@@ -12,15 +12,16 @@ const heading = {
 
 const sectionClass =
   "relative z-10 mx-auto w-full max-w-6xl px-6 pb-40 pt-32 sm:px-10 sm:pt-44 lg:px-14";
-// identity view: no bottom padding — the reply box follows the card closely
+// identity view: no bottom padding — the reply box follows the card wall
 const sectionClassTight = sectionClass.replace("pb-40", "pb-0");
 
 /**
  * PeopleSection — two modes:
- *  - default: the personalized reveal — after the identity gate, each
- *    visitor sees only THEIR card
+ *  - default: the personalized reveal — after the identity gate, the
+ *    visitor sees the full card wall; every tile is sealed except their
+ *    own, which glows and opens their note
  *  - `preview` (author appends #preview to the URL): the full grid of
- *    every colleague card, so the author can review all notes
+ *    every colleague card, all open — so the author can review all notes
  */
 export default function PeopleSection({ identity, preview = false, onSelect }) {
   const reduced = useReducedMotion();
@@ -97,19 +98,35 @@ export default function PeopleSection({ identity, preview = false, onSelect }) {
         transition={{ ...heading.transition, delay: 0.3 }}
         className="mb-16 max-w-md text-sm leading-relaxed text-[rgba(255,255,255,0.5)] sm:mb-24"
       >
-        Of everything I'm leaving behind, this one is yours alone. Open it
-        whenever you're ready.
+        Everyone is on this wall — but only your card will open. The rest
+        stay sealed; their words are theirs alone. Open yours whenever
+        you're ready.
       </motion.p>
 
-      <motion.div
-        initial={{ opacity: 0, y: 70, filter: "blur(6px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 1.2, delay: 0.25, ease: EASE }}
-        className="mx-auto w-full max-w-md"
-      >
-        <PersonCard person={identity} onSelect={() => onSelect(identity)} featured />
-      </motion.div>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {colleagues.map((person, i) => (
+          <motion.div
+            key={person.id}
+            initial={
+              reduced ? { opacity: 0 } : { opacity: 0, y: 70, filter: "blur(6px)" }
+            }
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{
+              duration: 1.1,
+              delay: (i % 3) * 0.12,
+              ease: EASE,
+            }}
+          >
+            <PersonCard
+              person={person}
+              featured={person.id === identity.id}
+              sealed={person.id !== identity.id}
+              onSelect={() => onSelect(identity)}
+            />
+          </motion.div>
+        ))}
+      </div>
     </section>
   );
 }
