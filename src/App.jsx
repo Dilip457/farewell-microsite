@@ -5,6 +5,7 @@ import IdentityGate from "./components/IdentityGate";
 import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
+import MessageForAuthor from "./components/MessageForAuthor";
 import { author, colleagues } from "./data/colleagues";
 import { startSpinningFavicon } from "./lib/spinningFavicon";
 
@@ -129,6 +130,10 @@ export default function App() {
               <HeroSection />
               <PeopleSection identity={identity} onSelect={setSelected} />
             </main>
+
+            {/* quiet box below the cards — replies to the author.
+                Hidden until the Google Form is configured (feedback.js). */}
+            <MessageForAuthor person={identity} />
 
             {/* closing */}
             <motion.footer
