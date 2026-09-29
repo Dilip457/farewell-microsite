@@ -1,5 +1,4 @@
 name: Deploy to GitHub Pages
-
 on:
   push:
     branches: [main]
@@ -19,6 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Generate favicon assets
+        run: |
+          python3 -m pip install --user --break-system-packages pillow || python3 -m pip install --user pillow
+          python3 scripts/make_favicons.py
 
       - uses: actions/setup-node@v4
         with:

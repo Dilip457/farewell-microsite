@@ -9,8 +9,9 @@ const EASE = [0.22, 1, 0.36, 1];
  * IdentityGate — the entry experience.
  *
  * Everyone receives the same link. On open, each person picks their own
- * name (optionally confirming with a personal `pin` from the data file),
- * and the site then reveals only THEIR card and note.
+ * name, confirms it once (a personal `pin` from the data file if one is
+ * set, otherwise a simple yes/no check), and the site then reveals only
+ * THEIR card and note. The choice is remembered in this browser.
  *
  * No credentials are ever sent to anyone — the colleague identifies
  * themselves, and the optional pin is something they already know.
@@ -43,10 +44,7 @@ export default function IdentityGate({ onIdentify }) {
     return colleagues.filter((c) => c.name.toLowerCase().includes(q));
   }, [query]);
 
-  const choose = (person) => {
-    if (person.pin) setPending(person);
-    else onIdentify(person);
-  };
+  const choose = (person) => setPending(person);
 
   const submitPin = (e) => {
     e.preventDefault();
@@ -122,7 +120,7 @@ export default function IdentityGate({ onIdentify }) {
                 )}
               </div>
             </>
-          ) : (
+          ) : pending.pin ? (
             <form onSubmit={submitPin}>
               <p className="section-label mb-6">One quick check</p>
 
@@ -173,6 +171,38 @@ export default function IdentityGate({ onIdentify }) {
                 </button>
               </div>
             </form>
+          ) : (
+            <div>
+              <p className="section-label mb-6">One quick check</p>
+
+              <h1 className="text-[clamp(34px,6vw,52px)] font-semibold leading-[0.98] tracking-[-0.05em] text-[#f5f5f5]">
+                Just to
+                <br />
+                be sure.
+              </h1>
+
+              <p className="mb-7 mt-5 text-sm leading-relaxed text-[rgba(255,255,255,0.5)]">
+                Are you <span className="font-semibold text-[rgba(255,255,255,0.9)]">{pending.name}</span>? You'll see the
+                farewell note written just for you.
+              </p>
+
+              <div className="mt-8 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <button
+                  type="button"
+                  onClick={() => setPending(null)}
+                  className="text-[11px] font-medium uppercase tracking-[0.28em] text-[rgba(255,255,255,0.4)] transition-colors duration-300 hover:text-[rgba(255,255,255,0.75)]"
+                >
+                  ← No, that's not me
+                </button>
+                <button
+                  type="button"
+                  className="pill-button"
+                  onClick={() => onIdentify(pending)}
+                >
+                  Yes, that's me
+                </button>
+              </div>
+            </div>
           )}
         </motion.div>
       </div>

@@ -12,10 +12,12 @@ const EASE = [0.22, 1, 0.36, 1];
 const IDENTITY_KEY = "farewell-identity-id";
 const PREVIEW_HASH = "#preview";
 
-/** Restore a returning visitor's chosen identity (same tab session). */
+/** Restore a returning visitor's chosen identity (localStorage —
+ *  survives new tabs and browser restarts, so re-opening the shared link
+ *  cannot be used to simply pick a different person). */
 function loadIdentity() {
   try {
-    const raw = sessionStorage.getItem(IDENTITY_KEY);
+    const raw = localStorage.getItem(IDENTITY_KEY);
     if (!raw) return null;
     return colleagues.find((c) => String(c.id) === raw) || null;
   } catch {
@@ -45,7 +47,7 @@ export default function App() {
 
   const identify = (person) => {
     try {
-      sessionStorage.setItem(IDENTITY_KEY, String(person.id));
+      localStorage.setItem(IDENTITY_KEY, String(person.id));
     } catch {
       /* private mode — gate just re-appears next visit */
     }
@@ -54,7 +56,7 @@ export default function App() {
 
   const resetIdentity = () => {
     try {
-      sessionStorage.removeItem(IDENTITY_KEY);
+      localStorage.removeItem(IDENTITY_KEY);
     } catch {
       /* ignore */
     }
