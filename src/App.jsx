@@ -6,6 +6,7 @@ import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
 import { author, colleagues } from "./data/colleagues";
+import { startSpinningFavicon } from "./lib/spinningFavicon";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -32,6 +33,12 @@ export default function App() {
     () => window.location.hash === PREVIEW_HASH
   );
   const reduced = useReducedMotion();
+
+  // animate the tab icon (the "thinking orb") — see the perf notes there;
+  // skips itself for reduced-motion visitors
+  useEffect(() => {
+    startSpinningFavicon();
+  }, []);
 
   // NOTE: the body scroll lock lives ONLY in PersonalNoteModal.
   // A duplicate lock here fought with it (wrong restore order) and

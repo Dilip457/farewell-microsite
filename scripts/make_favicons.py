@@ -1,9 +1,13 @@
-"""Generate the favicon set into public/ from scripts/orb-source.png.
+"""Generate the static favicon set into public/ from scripts/orb-source.png.
 
 The orb source is a 69x69 grayscale crop of a dotted 3D sphere (dark
 background, white dots). This script re-renders it crisply at every
-favicon size on the site's near-black tile with a subtle blue-violet
-glow. The deploy workflow runs it before `npm run build`.
+favicon size on a TRANSPARENT background (no dark tile), tinted the
+site's light orbital blue so it reads on both dark and light tabs.
+Small sizes add a thin ring for a clear silhouette. The deploy workflow
+runs it before `npm run build`. The browser-side spinningFavicon module
+animates the tab icon at runtime; these files are the initial icon and
+the fallback.
 
 Requires: Pillow (pip install pillow).
 """
@@ -11,13 +15,16 @@ import io
 import os
 import struct
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 PUB = os.path.join(REPO, "public")
 
 ORIG_LO, ORIG_HI = 32.0, 215.0  # source grayscale range mapped to alpha
+# depth tint: back dots deep blue (visible on light tabs), front dots bright
+DOT_DEEP = (58, 128, 242)
+DOT_LIGHT = (160, 200, 255)
 
 
 def orb_alpha():
@@ -31,38 +38,26 @@ def orb_alpha():
     return im.point(to_alpha)
 
 
-def make_tile(size, orb_frac, boost, glow_alpha, ring_w=0, ring_alpha=140, base=None):
-    """Render the orb on a dark cinematic tile at `size` px."""
+def make_orb(size, orb_frac, boost, ring_w=0, ring_alpha=150):
+    """Render the dotted orb filling the icon on a transparent tile."""
     S = size * 4  # supersample for smooth antialiasing
-    tile = Image.new("RGB", (S, S), (5, 5, 7))
-
-    # subtle blue-violet radial glow, echoing the site atmosphere
-    glow = Image.new("L", (S, S), 0)
-    gd = ImageDraw.Draw(glow)
-    half = S / 2
-    for i in range(int(half), 0, -max(2, S // 96)):
-        a = int(glow_alpha * (1 - i / half) ** 1.7)
-        gd.ellipse([half - i, half - i, half + i, half + i], fill=a)
-    glow = glow.filter(ImageFilter.GaussianBlur(S // 40))
-    tile = Image.composite(Image.new("RGB", (S, S), (110, 160, 255)), tile, glow)
-    g2 = glow.point(lambda v: v // 3)
-    tile = Image.composite(Image.new("RGB", (S, S), (150, 120, 255)), tile, g2)
-
-    # the orb: upscale the alpha mask smoothly into white dots
     target = int(S * orb_frac)
-    a = (base if base is not None else orb_alpha()).resize((target, target), Image.LANCZOS)
+    a = orb_alpha().resize((target, target), Image.LANCZOS)
     a = a.point(lambda v: int(min(255, v * boost)))
     fa = Image.new("L", (S, S), 0)
     ox = (S - target) // 2
     fa.paste(a, (ox, ox))
-    if ring_w:  # thin luminous ring for edge definition at tiny sizes
+    if ring_w:  # thin ring so tiny sizes keep a clear silhouette
         rd = ImageDraw.Draw(fa)
         rd.ellipse([ox, ox, ox + target, ox + target], outline=ring_alpha, width=ring_w)
-    dots = Image.new("RGBA", (S, S), (250, 252, 255, 255))
-    dots.putalpha(fa)
-
-    out = tile.convert("RGBA")
-    out.alpha_composite(dots)
+    # two depth layers: deep blue base + bright overlay on the front dots
+    deep = Image.new("RGBA", (S, S), (*DOT_DEEP, 255))
+    deep.putalpha(fa)
+    bright = Image.new("RGBA", (S, S), (*DOT_LIGHT, 255))
+    bright.putalpha(fa.point(lambda v: (v * v * v) // 65025))
+    out = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    out.alpha_composite(deep)
+    out.alpha_composite(bright)
     return out.resize((size, size), Image.LANCZOS)
 
 
@@ -74,13 +69,12 @@ def png_bytes(img):
 
 def main():
     os.makedirs(PUB, exist_ok=True)
-    base = orb_alpha()
-    # small sizes get contrast boost + an edge ring so they stay readable
-    i16 = make_tile(16, 0.82, 2.6, 55, ring_w=8, ring_alpha=150, base=base)
-    i32 = make_tile(32, 0.82, 2.2, 50, ring_w=6, ring_alpha=110, base=base)
-    i48 = make_tile(48, 0.76, 1.8, 48, base=base)
-    i180 = make_tile(180, 0.74, 1.25, 48, base=base)
-    i192 = make_tile(192, 0.74, 1.25, 48, base=base)
+    # small sizes: bigger fill + boost + ring; large sizes: near-full fill
+    i16 = make_orb(16, 0.96, 2.6, ring_w=8, ring_alpha=210)
+    i32 = make_orb(32, 0.94, 2.3, ring_w=6, ring_alpha=160)
+    i48 = make_orb(48, 0.92, 1.9)
+    i180 = make_orb(180, 0.90, 1.55)
+    i192 = make_orb(192, 0.90, 1.55)
 
     # multi-resolution .ico built by hand (clean 16/32/48 entries)
     frames = [(16, png_bytes(i16)), (32, png_bytes(i32)), (48, png_bytes(i48))]
