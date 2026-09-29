@@ -31,7 +31,9 @@ export default function MessageForAuthor({ person }) {
     try {
       const body = new URLSearchParams();
       if (feedback.nameEntry) body.set(feedback.nameEntry, person.name);
+      if (feedback.nameEntryAlt) body.set(feedback.nameEntryAlt, person.name);
       body.set(feedback.messageEntry, text.trim());
+      if (feedback.messageEntryAlt) body.set(feedback.messageEntryAlt, text.trim());
       // hidden fields a real browser submit includes — without them some
       // forms record the response but drop the answers
       body.set("fvv", "1");
