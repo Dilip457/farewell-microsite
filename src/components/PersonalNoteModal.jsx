@@ -150,6 +150,18 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
             transition={{ duration: 0.8, ease: EASE }}
             style={{ transformPerspective: 1400 }}
           >
+            {/* airy floating name — a large soft ghost of the reader's name
+                drifting behind the message while they read. Sticky + zero
+                height so it stays in view for the whole note; content sits
+                on a layer above it. */}
+            <div aria-hidden="true" className="ghost-name">
+              <span className="ghost-name-inner">
+                {person.mentionName || person.name.split(" ")[0]}
+              </span>
+            </div>
+
+            {/* content layer — above the ghost */}
+            <div className="relative z-[1] flex flex-col">
             {/* header */}
             <div className="mb-10 flex items-center justify-between sm:mb-14">
               <span className="text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.5)] sm:text-[11px]">
@@ -223,6 +235,7 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
                 Close
               </button>
             </motion.div>
+            </div>
           </motion.div>
         </motion.div>
       )}

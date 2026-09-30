@@ -271,12 +271,51 @@ body {
   animation: scroll-hint 2.6s ease-in-out infinite;
 }
 
+/* ---------- airy ghost name (inside the note modal) ---------- */
+
+/* sticky + zero height: the watermark keeps floating behind the note
+   text for the whole length of the message, even while scrolling */
+.ghost-name {
+  position: sticky;
+  top: 22%;
+  z-index: 0;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ghost-name-inner {
+  display: block;
+  transform: translateY(-50%);
+  text-align: center;
+  font-weight: 800;
+  font-size: clamp(64px, 15vw, 132px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(140, 180, 255, 0.055);
+  filter: blur(7px);
+  animation: ghost-float 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes ghost-float {
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(-2.5%) rotate(-1.4deg);
+  }
+  50% {
+    transform: translateY(-58%) translateX(2.5%) rotate(1deg);
+  }
+}
+
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
-  .orb-a, .orb-b, .leak-a, .leak-b, .grain, .scroll-dot {
+  .orb-a, .orb-b, .leak-a, .leak-b, .grain, .scroll-dot, .ghost-name-inner {
     animation: none !important;
   }
 
