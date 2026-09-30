@@ -48,7 +48,7 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
     // 3D tilt (disabled for reduced motion / touch)
     if (reduced || !canHover) return;
     const nx = px / rect.width - 0.5; // -0.5 .. 0.5
-    const ny = py / rect.height - 0.5;
+    const ny = py / rect.height - 0.5; // -0.5 .. 0.5
     rotateY.set(nx * 8); // ±4°
     rotateX.set(-ny * 8); // ±4°
   };
@@ -59,8 +59,10 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
   };
 
   // one word per line, but 4+ word names wrap into two balanced lines
-  // so they fit the fixed card height (nothing gets clipped)
-  const words = person.name.split(" ");
+  // so they fit the fixed card height (nothing gets clipped).
+  // `cardName` (optional) overrides the wall label with a shorter form
+  // (e.g. "Sai Harshitha") while the full name stays on the note modal.
+  const words = (person.cardName || person.name).split(" ");
   const nameLines =
     words.length > 3
       ? [
@@ -111,9 +113,7 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
 
         <div className="relative">
           {nameBlock}
-          <span className="mt-3 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-[rgba(255,255,255,0.35)]">
-            Sealed
-          </span>
+          <span className="mt-3 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-[rgba(255,255,255,0.35)]">Sealed</span>
         </div>
       </div>
     );
