@@ -88,7 +88,7 @@ export const colleagues = [
   {
     id: 10,
     name: "Sai Harshitha Reddy Pendyala",
-    mentionName: "Sai Harshitha",
+    mentionName: "Harshitha",
     number: "10",
     accent: "blue",
     message: "Hi Harshitha Gaaru,\n\nEven though we did not get many chances to interact or have worked closely, I always admired the skills and dedication you brought to your work. The developments, improvements, and automations you worked on were genuinely helpful and made a positive impact on the team.\n\nIt is always inspiring to see someone continuously learn, build, and find better ways to solve problems, and that is something I noticed in your work.\n\nI wish you all the very best for your future. May you continue to create amazing solutions, automate even more things, and achieve great success in everything you do.\n\nThank you, Harshitha Gaaru, and wishing you a wonderful journey ahead!",
