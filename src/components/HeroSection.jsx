@@ -38,7 +38,7 @@ export default function HeroSection() {
           01 / Signing Off
         </motion.p>
 
-        <motion.h1 {...rise(0.28)} className="hero-title text-[#f5f5f5]">
+        <motion.h1 {...rise(0.23)} className="hero-title text-[#f5f5f5]">
           One Last
           <br />
           Ping.
