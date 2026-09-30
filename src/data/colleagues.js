@@ -48,7 +48,7 @@ export const colleagues = [
     name: "Nagaraju Rudravaram",
     number: "04",
     accent: "blue",
-    message: "Hi Nagaraju Gaaru,\n\nIt has been a good journey working with you on RCI related activities andi. During that time, I had the opportunity to learn several things, especially when you asked me few queries to look for. Those experiences helped me improve both my knowledge and confidence.\n\nOne thing I truly appreciate about you is the way you recognize people's efforts and support them. A few words of appreciation can motivate anyone to do better. That quality is something I genuinely admire.\n\nI am happy and grateful that I got the chance to work with you and be a part of this journey. Thank you for all the support, guidance, and encouragement along the way.\n\nWishing you good health, happiness, and continued success in everything you do. And most importantly, I hope you always keep smiling the way you do.\n\nThank you, Nagaraju Garu!",
+    message: "Hi Nagaraju Gaaru,\n\nIt has been a good journey working with you on RCI related activities andi. During that time, I had the opportunity to learn several things, especially when you asked me few queries to look for. Those experiences helped me improve both my knowledge and confidence.\n\nOne thing I truly appreciate about you is the way you recognize people's efforts and support them. A few words of appreciation can motivate anyone to do better. That quality is something I genuinely admire.\n\nI am happy and grateful that I got the chance to work with you and be a part of this journey. Thank you for all the support, guidance, and encouragement along the way.\n\nWishing you good health, happiness, and continued success in everything you do. And most importantly, I hope you always keep smiling the way you do.\n\nThank you, Nagaraju Gaaru!",
   },
   {
     id: 5,
@@ -112,7 +112,7 @@ export const colleagues = [
     name: "Tapasya Chittineni",
     number: "13",
     accent: "blue",
-    message: "Hi Tapasya Garu,\n\nOne thing I have always appreciated about you is your kind and welcoming nature. Whenever I approached you with a doubt or question, you were always willing to help and explain things, even when you were busy with your own work. That is something I truly value and won't forget.\n\nWishing you great success in your career, happiness in your life, and many wonderful opportunities ahead. May you continue to grow, achieve great things, and positively impact everyone around you.\n\nAll the very best, Tapasya Garu!",
+    message: "Hi Tapasya Gaaru,\n\nOne thing I have always appreciated about you is your kind and welcoming nature. Whenever I approached you with a doubt or question, you were always willing to help and explain things, even when you were busy with your own work. That is something I truly value and won't forget.\n\nWishing you great success in your career, happiness in your life, and many wonderful opportunities ahead. May you continue to grow, achieve great things, and positively impact everyone around you.\n\nAll the very best, Tapasya Gaaru!",
   },
   {
     id: 14,
@@ -126,7 +126,7 @@ export const colleagues = [
     name: "Venkatesh Patha",
     number: "15",
     accent: "pink",
-    message: "Hi Venkatesh Garu,\n\nOne thing I will always remember about you is how you would check in on people with genuine concern. I still remember you asking me, \"Is everything okay?\" and whether things were going well around me. It may seem like a small gesture, but it meant a lot to me.\n\nEvery time we crossed paths, you always made sure to acknowledge me with a wave. Those small acts of kindness and warmth say a lot about a person. You have a natural way of making people feel noticed and valued.\n\nThank you, Venkatesh Garu, for your kindness, support, and all those warm gestures throughout my journey. I truly appreciate them.",
+    message: "Hi Venkatesh Gaaru,\n\nOne thing I will always remember about you is how you would check in on people with genuine concern. I still remember you asking me, \"Is everything okay?\" and whether things were going well around me. It may seem like a small gesture, but it meant a lot to me.\n\nEvery time we crossed paths, you always made sure to acknowledge me with a wave. Those small acts of kindness and warmth say a lot about a person. You have a natural way of making people feel noticed and valued.\n\nThank you, Venkatesh Gaaru, for your kindness, support, and all those warm gestures throughout my journey. I truly appreciate them.",
   },
   {
     id: 16,
