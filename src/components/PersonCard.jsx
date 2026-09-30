@@ -7,6 +7,22 @@ const GLOWS = {
   pink: "rgba(230, 130, 215, 0.11)",
 };
 
+/** Wrap the part of a card name that matches the live search query in a
+ *  soft blue highlight, so the wall "answers" while typing. */
+function highlight(line, query) {
+  const q = query.trim();
+  if (!q) return line;
+  const idx = line.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return line;
+  return (
+    <>
+      {line.slice(0, idx)}
+      <span className="hl">{line.slice(idx, idx + q.length)}</span>
+      {line.slice(idx + q.length)}
+    </>
+  );
+}
+
 /**
  * PersonCard — a floating glass tile.
  *  - 3D tilt (max ±4°) driven by cursor, spring-smoothed
@@ -18,7 +34,7 @@ const GLOWS = {
  *  - `sealed`: everyone else's card in the personalized grid — dimmed,
  *    locked, not clickable; the words stay private to their person
  */
-export default function PersonCard({ person, onSelect, featured = false, sealed = false, actionLabel }) {
+export default function PersonCard({ person, onSelect, featured = false, sealed = false, actionLabel, dimmed = false, query = "" }) {
   const reduced = useReducedMotion();
 
   const rotateX = useMotionValue(0);
@@ -73,7 +89,7 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
     <h3 className="card-name text-[#f5f5f5]">
       {nameLines.map((line, i) => (
         <span key={i} className="block">
-          {line}
+          {highlight(line, query)}
         </span>
       ))}
     </h3>
@@ -132,12 +148,14 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
         transformPerspective: 1200,
         "--card-glow": GLOWS[person.accent] || GLOWS.blue,
       }}
-      whileHover={reduced ? undefined : { scale: 1.02, z: 18 }}
+      whileHover={reduced ? undefined : { scale: 1.02, y: -8, z: 20 }}
       whileTap={reduced ? undefined : { scale: 0.985 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-haspopup="dialog"
       aria-label={`Open personal note for ${person.name}`}
       className={`glass-card tint-${person.accent} group flex h-[190px] w-full cursor-pointer flex-col justify-between p-6 text-left sm:h-[200px] lg:h-[210px] ${
+        dimmed ? "card-dimmed" : ""
+      } ${
         featured
           ? "border-[rgba(125,184,255,0.45)] shadow-[0_0_55px_-12px_rgba(100,150,255,0.4)]"
           : ""
@@ -162,7 +180,7 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
           height="14"
           viewBox="0 0 14 14"
           fill="none"
-          className="mt-[2px] text-[rgba(255,255,255,0.3)] transition-colors duration-500 group-hover:text-[rgba(125,184,255,0.85)]"
+          className="mt-[2px] text-[rgba(255,255,255,0.3)] transition-all duration-500 group-hover:-translate-y-[3px] group-hover:translate-x-[3px] group-hover:text-[rgba(125,184,255,0.85)]"
         >
           <path
             d="M2 12L12 2M12 2H4.5M12 2v7.5"

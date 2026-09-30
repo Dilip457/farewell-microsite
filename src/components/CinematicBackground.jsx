@@ -184,6 +184,58 @@ function CursorGlow() {
   );
 }
 
+/** Gentle pointer parallax for the atmospheric layers — the whole light
+ *  field leans ±12px toward the cursor, lazily interpolated so it reads
+ *  as a slow camera drift rather than a cursor follower. Desktop only,
+ *  skipped for reduced-motion visitors. */
+function AtmosphereParallax({ children }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!window.matchMedia("(hover: hover)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
+    let tx = 0;
+    let ty = 0;
+    let x = 0;
+    let y = 0;
+
+    const onMove = (e) => {
+      // normalize to -0.5 .. 0.5 around the viewport centre
+      tx = e.clientX / window.innerWidth - 0.5;
+      ty = e.clientY / window.innerHeight - 0.5;
+    };
+
+    const loop = () => {
+      x += (tx - x) * 0.03; // very lazy — calm drift, never twitchy
+      y += (ty - y) * 0.03;
+      el.style.transform = `translate3d(${(-x * 12).toFixed(2)}px, ${(-y * 8).toFixed(2)}px, 0) scale(1.04)`;
+      raf = requestAnimationFrame(loop);
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    raf = requestAnimationFrame(loop);
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      aria-hidden="true"
+      className="absolute inset-0 will-change-transform"
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function CinematicBackground({ paused = false }) {
   return (
     <div
@@ -201,7 +253,10 @@ export default function CinematicBackground({ paused = false }) {
         }}
       />
 
-      {/* Layer 2 — atmospheric orbs (soft gradients, no live blur) */}
+      {/* Layers 2–3 — orbs + light leaks, wrapped in a gentle pointer
+          parallax (scaled 1.04 so the drift never exposes edges) */}
+      <AtmosphereParallax>
+        {/* Layer 2 — atmospheric orbs (soft gradients, no live blur) */}
       <div
         className="orb orb-a h-[46vw] w-[46vw] opacity-[0.16]"
         style={{
@@ -252,6 +307,7 @@ export default function CinematicBackground({ paused = false }) {
           borderRadius: "50%",
         }}
       />
+      </AtmosphereParallax>
 
       {/* Layer 4 — particles */}
       <ParticleField paused={paused} />

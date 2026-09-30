@@ -139,13 +139,17 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
             initial={
               reduced
                 ? { opacity: 0, scale: 0.96 }
-                : { opacity: 0, scale: 0.92, z: -120 }
+                : { opacity: 0, scale: 0.92, z: -120, y: 26, filter: "blur(10px)" }
             }
-            animate={reduced ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1, z: 0 }}
+            animate={
+              reduced
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 1, scale: 1, z: 0, y: 0, filter: "blur(0px)" }
+            }
             exit={
               reduced
                 ? { opacity: 0, scale: 0.97 }
-                : { opacity: 0, scale: 0.95, z: -60 }
+                : { opacity: 0, scale: 0.95, z: -60, filter: "blur(4px)" }
             }
             transition={{ duration: 0.8, ease: EASE }}
             style={{ transformPerspective: 1400 }}
@@ -189,7 +193,7 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
               initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 0.9, delay: 0.18, ease: EASE }}
-              className="text-[clamp(30px,5vw,52px)] font-semibold leading-[1.02] tracking-[-0.045em] text-[#f5f5f5]"
+              className="display-serif text-[clamp(34px,5.5vw,58px)] leading-[1.04] text-[#f5f5f5]"
             >
               {person.name}
             </motion.h2>
@@ -203,15 +207,25 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
               style={{ transformOrigin: "left" }}
             />
 
-            {/* message */}
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.32, ease: EASE }}
-              className="max-w-2xl whitespace-pre-line text-[15px] font-light leading-[1.85] tracking-wide text-[rgba(245,245,245,0.82)] sm:text-[17px]"
-            >
-              <RichText text={person.message} />
-            </motion.p>
+            {/* message — revealed paragraph by paragraph; the stagger is
+                capped so long notes never feel like they take forever */}
+            <div className="max-w-2xl">
+              {person.message.split(/\n\n+/).map((para, i) => (
+                <motion.p
+                  key={i}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.75,
+                    delay: 0.34 + Math.min(i, 5) * 0.09,
+                    ease: EASE,
+                  }}
+                  className="mb-5 whitespace-pre-line text-[16px] font-light leading-[1.85] tracking-wide text-[rgba(245,245,245,0.85)] last:mb-0 sm:text-[19px]"
+                >
+                  <RichText text={para} />
+                </motion.p>
+              ))}
+            </div>
 
             {/* reply box — inside the note itself, so nobody has to scroll
                 the page below to find it. Skipped in author preview. */}
