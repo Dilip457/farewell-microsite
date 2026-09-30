@@ -157,7 +157,10 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   }
 
   // ---- identity mode: everyone sealed except your glowing card ----
-  const firstName = identity.name.split(" ")[0];
+  // how the visitor is addressed in the "A few words, for you, …" heading —
+  // first word of the name by default, overridable per person (e.g. someone
+  // whose first word isn't the name they go by)
+  const mentionName = identity.mentionName || identity.name.split(" ")[0];
 
   return (
     <section id="people" aria-label="A note for you" className={sectionClass}>
@@ -172,7 +175,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
       >
         A few words,
         <br />
-        for you, {firstName}.
+        for you, {mentionName}.
       </motion.h2>
 
       <motion.p
