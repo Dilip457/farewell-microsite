@@ -112,7 +112,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
           className="mb-10 max-w-md text-sm leading-relaxed text-[rgba(255,255,255,0.5)]"
         >
           Every interaction here has meant a lot to me. Find your card below —
-          a personal note of appreciation is waiting inside.
+          a small note from my side is waiting inside.
         </motion.p>
 
         <motion.div
