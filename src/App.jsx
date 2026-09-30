@@ -5,7 +5,6 @@ import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
 import PinPrompt from "./components/PinPrompt";
-import JourneyMarker from "./components/JourneyMarker";
 import { author, colleagues } from "./data/colleagues";
 import { startSpinningFavicon } from "./lib/spinningFavicon";
 
@@ -91,9 +90,6 @@ export default function App() {
     <div className="relative min-h-screen">
       {/* background pauses its particle field while a note modal is open */}
       <CinematicBackground paused={Boolean(selected)} />
-
-      {/* quiet 01/02 journey cue, bottom-right */}
-      <JourneyMarker />
 
       <AnimatePresence mode="wait">
         {preview ? (

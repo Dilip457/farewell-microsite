@@ -33,27 +33,16 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
     return colleagues.filter((c) => c.name.toLowerCase().includes(q));
   }, [query]);
 
-  const matchIds = useMemo(
-    () => new Set(filtered.map((c) => c.id)),
-    [filtered]
-  );
-
   const tile = (person, i, card) => (
     <motion.div
       key={person.id}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 70, filter: "blur(6px)", scale: 0.985 }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 70, filter: "blur(6px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{
         duration: 1.1,
-        // staggered rows, gentle column offset, capped so late rows feel quick
-        delay: Math.min((i % 3) * 0.08 + Math.floor(i / 3) * 0.05, 0.45),
+        delay: (i % 3) * 0.12,
         ease: EASE,
-      }}
-      style={{
-        // deterministic, position-based resting tilt — each card sits at its
-        // own slightly different angle, like objects on a table (not random)
-        rotate: !reduced ? (i % 3 - 1) * 0.35 : 0,
       }}
     >
       {card}
@@ -120,7 +109,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
         <motion.p
           {...heading}
           transition={{ ...heading.transition, delay: 0.3 }}
-          className="mb-10 max-w-md text-sm leading-relaxed text-[rgba(255,255,255,0.55)]"
+          className="mb-10 max-w-md text-sm leading-relaxed text-[rgba(255,255,255,0.5)]"
         >
           Every interaction here has meant a lot to me. Find your card below —
           a small note from my side is waiting inside.
@@ -129,72 +118,37 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
         <motion.div
           {...heading}
           transition={{ ...heading.transition, delay: 0.4 }}
-          className="mb-10 max-w-md"
+          className="mb-8 max-w-md"
         >
           <label htmlFor="pick-search" className="sr-only">
             Search your name
           </label>
-          <div className="group relative rounded-2xl transition-all duration-500 focus-within:-translate-y-0.5 focus-within:border-[rgba(125,184,255,0.5)] focus-within:shadow-[0_0_44px_-8px_rgba(100,150,255,0.45)] border border-[rgba(255,255,255,0.14)] bg-[rgba(255,255,255,0.03)] focus-within:bg-[rgba(255,255,255,0.045)]">
-            <svg
-              aria-hidden="true"
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
-              fill="none"
-              className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-[rgba(255,255,255,0.35)] transition-colors duration-300 group-focus-within:text-[rgba(138,196,255,0.9)]"
-            >
-              <circle cx="6.5" cy="6.5" r="4.6" stroke="currentColor" strokeWidth="1.3" />
-              <path d="M10 10l3.2 3.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-            </svg>
-            <input
-              id="pick-search"
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowDown") {
-                  const first = document.querySelector(".glass-card:not(.card-dimmed)");
-                  if (first) {
-                    e.preventDefault();
-                    first.focus();
-                  }
-                } else if (e.key === "Enter" && filtered.length === 1) {
-                  onPick(filtered[0]);
-                }
-              }}
-              placeholder="Type your name to find your card…"
-              autoComplete="off"
-              aria-label="Search your name"
-              className="w-full rounded-2xl bg-transparent px-12 py-3.5 text-[15px] text-[#f5f5f5] outline-none placeholder:text-[rgba(255,255,255,0.3)]"
-            />
-            <span
-              aria-live="polite"
-              className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.28em] text-[rgba(255,255,255,0.35)]"
-            >
-              {query.trim()
-                ? `${filtered.length} of ${colleagues.length}`
-                : `${colleagues.length} notes`}
-            </span>
-          </div>
+          <input
+            id="pick-search"
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Type your name to find your card…"
+            autoComplete="off"
+            className="w-full rounded-2xl border border-[rgba(255,255,255,0.14)] bg-[rgba(255,255,255,0.03)] px-5 py-3.5 text-[15px] text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-[rgba(255,255,255,0.3)] focus:border-[rgba(125,184,255,0.5)]"
+          />
         </motion.div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {colleagues.map((person, i) =>
+          {filtered.map((person, i) =>
             tile(
               person,
               i,
               <PersonCard
                 person={person}
                 actionLabel="This is me"
-                dimmed={!matchIds.has(person.id)}
-                query={query}
                 onSelect={() => onPick(person)}
               />
             )
           )}
           {filtered.length === 0 && (
             <p className="col-span-full py-6 text-center text-sm text-[rgba(255,255,255,0.4)]">
-              No note found yet — try another name.
+              No name matches “{query}”.
             </p>
           )}
         </div>
