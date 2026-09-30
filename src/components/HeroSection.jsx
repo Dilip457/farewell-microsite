@@ -41,7 +41,7 @@ export default function HeroSection() {
         <motion.h1 {...rise(0.28)} className="hero-title text-[#f5f5f5]">
           One Last
           <br />
-          Ping :).
+          Ping :)
         </motion.h1>
 
         <motion.p
