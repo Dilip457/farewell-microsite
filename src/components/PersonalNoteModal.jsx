@@ -150,6 +150,9 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
             transition={{ duration: 0.8, ease: EASE }}
             style={{ transformPerspective: 1400 }}
           >
+            {/* iridescent top edge — the glass panel's lit rim */}
+            <span aria-hidden="true" className="iridescent-edge" />
+
             {/* airy floating name — a large soft ghost of the reader's name
                 drifting behind the message while they read. Sticky + zero
                 height so it stays in view for the whole note; content sits

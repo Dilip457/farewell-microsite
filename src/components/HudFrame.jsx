@@ -20,6 +20,9 @@ export default function HudFrame() {
       <span className="hud-meta absolute right-11 top-[26px]">
         SIGN-OFF <span className="text-[rgba(190,210,240,0.24)]">·</span> 05.10.26
       </span>
+      <span className="hud-meta absolute right-11 top-[42px] text-[rgba(190,210,240,0.22)]">
+        REF · QC-2026-19
+      </span>
       <span className="hud-meta absolute bottom-[26px] left-11 flex items-center">
         <i className="hud-dot" />
         DILIP SANJAY

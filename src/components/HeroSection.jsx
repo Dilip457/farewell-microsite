@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import OrbitalRings from "./OrbitalRings";
+import { colleagues } from "../data/colleagues";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -26,21 +27,40 @@ export default function HeroSection() {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const objectY = useTransform(scrollYProgress, [0, 1], ["0vh", "10vh"]);
 
+  const total = colleagues.length;
+
   return (
     <section
+      id="top"
       ref={ref}
       className="relative flex min-h-[100svh] items-center overflow-hidden"
       aria-label="Introduction"
     >
+      {/* oversized outlined word bleeding off the right edge — background layer */}
+      <span
+        aria-hidden="true"
+        className="ghost-word pointer-events-none right-[-6%] top-[8%] hidden text-[26vw] sm:block"
+      >
+        SPARQ
+      </span>
+
       {/* cinematic frame — a hairline inset around the scene */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-4 hidden rounded-[30px] border border-[rgba(255,255,255,0.05)] sm:block"
       />
 
+      {/* vertical technical label on the left edge */}
+      <motion.span
+        {...rise(1.0)}
+        className="hud-meta absolute left-7 top-1/2 hidden origin-left -translate-y-1/2 rotate-90 whitespace-nowrap xl:block"
+      >
+        FAREWELL TRANSMISSION — 2026
+      </motion.span>
+
       <motion.div
         style={reduced ? undefined : { y, scale, opacity }}
-        className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 pb-24 pt-28 sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:px-20 lg:pb-0 lg:pt-0"
+        className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 pb-24 pt-28 sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:px-24 lg:pb-0 lg:pt-0"
       >
         {/* left — the words */}
         <div>
@@ -62,6 +82,21 @@ export default function HeroSection() {
             meaningful stay with us. Before I move forward, I wanted to leave a
             small note for the people who made this journey memorable.
           </motion.p>
+
+          {/* metrics strip — states the whole privacy model at a glance */}
+          <motion.div {...rise(0.72)} className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <span className="metric">
+              <b>{total}</b> Notes
+            </span>
+            <span className="metric-rule" aria-hidden="true" />
+            <span className="metric">
+              <b>{total - 1}</b> Sealed
+            </span>
+            <span className="metric-rule" aria-hidden="true" />
+            <span className="metric">
+              <b>1</b> For You
+            </span>
+          </motion.div>
         </div>
 
         {/* right — the signature object */}

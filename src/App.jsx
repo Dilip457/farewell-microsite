@@ -6,6 +6,7 @@ import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
 import PinPrompt from "./components/PinPrompt";
 import HudFrame from "./components/HudFrame";
+import SideIndex from "./components/SideIndex";
 import { author, colleagues } from "./data/colleagues";
 import { startSpinningFavicon } from "./lib/spinningFavicon";
 
@@ -94,6 +95,9 @@ export default function App() {
 
       {/* hairline HUD interface layer */}
       <HudFrame />
+
+      {/* hairline section index (desktop) */}
+      <SideIndex />
 
       <AnimatePresence mode="wait">
         {preview ? (

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import PersonCard from "./PersonCard";
 import { colleagues } from "../data/colleagues";
@@ -27,27 +27,42 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   const reduced = useReducedMotion();
   const [query, setQuery] = useState("");
 
+  // staggered grid is a desktop-only composition (offset middle column)
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const on = () => setWide(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return colleagues;
     return colleagues.filter((c) => c.name.toLowerCase().includes(q));
   }, [query]);
 
-  const tile = (person, i, card) => (
-    <motion.div
-      key={person.id}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 70, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 1.1,
-        delay: (i % 3) * 0.12,
-        ease: EASE,
-      }}
-    >
-      {card}
-    </motion.div>
-  );
+  const tile = (person, i, card) => {
+    // editorial stagger: the middle column sits lower, so the wall reads as a
+    // composition rather than a spreadsheet
+    const offset = wide && i % 3 === 1 ? 30 : 0;
+    return (
+      <motion.div
+        key={person.id}
+        initial={reduced ? { opacity: 0 } : { opacity: 0, y: 70 + offset, filter: "blur(6px)" }}
+        whileInView={{ opacity: 1, y: offset, filter: "blur(0px)" }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{
+          duration: 1.1,
+          delay: (i % 3) * 0.12,
+          ease: EASE,
+        }}
+      >
+        {card}
+      </motion.div>
+    );
+  };
 
   if (preview) {
     return (
@@ -94,6 +109,12 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
     return (
       <section id="people" aria-label="Find your card" className={sectionClass}>
         <div aria-hidden="true" className="scene-glow" />
+        <span
+          aria-hidden="true"
+          className="ghost-word right-[-6%] top-[3%] hidden text-[20vw] lg:block"
+        >
+          {colleagues.length}
+        </span>
         <motion.p {...heading} className="section-label mb-8">
           02 / A note for you
         </motion.p>
@@ -101,11 +122,11 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
         <motion.h2
           {...heading}
           transition={{ ...heading.transition, delay: 0.15 }}
-          className="section-title mb-4 text-[#f5f5f5]"
+          className="section-title relative mb-4 text-[#f5f5f5]"
         >
           Which one
           <br />
-          are you?
+          <span className="text-hollow">are you?</span>
         </motion.h2>
 
         <motion.p
@@ -120,11 +141,22 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
         <motion.div
           {...heading}
           transition={{ ...heading.transition, delay: 0.4 }}
-          className="mb-8 max-w-md"
+          className="relative mb-10 max-w-md"
         >
           <label htmlFor="pick-search" className="sr-only">
             Search your name
           </label>
+          <svg
+            aria-hidden="true"
+            width="14"
+            height="14"
+            viewBox="0 0 15 15"
+            fill="none"
+            className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[rgba(160,190,240,0.45)]"
+          >
+            <circle cx="6.5" cy="6.5" r="4.6" stroke="currentColor" strokeWidth="1.3" />
+            <path d="M10 10l3.2 3.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+          </svg>
           <input
             id="pick-search"
             type="text"
@@ -132,8 +164,16 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Type your name to find your card…"
             autoComplete="off"
-            className="w-full rounded-2xl border border-[rgba(255,255,255,0.14)] bg-[rgba(255,255,255,0.03)] px-5 py-3.5 text-[15px] text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-[rgba(255,255,255,0.3)] focus:border-[rgba(125,184,255,0.5)]"
+            className="underline-field"
           />
+          <span
+            aria-live="polite"
+            className="metric absolute right-0 top-1/2 -translate-y-1/2"
+          >
+            {query.trim()
+              ? `${filtered.length} of ${colleagues.length}`
+              : `${colleagues.length} notes`}
+          </span>
         </motion.div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
