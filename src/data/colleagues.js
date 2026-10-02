@@ -149,4 +149,12 @@ export const colleagues = [
     accent: "pink",
     message: "Hi Vishnu Chetta,\n\nAlthough we did not get a chance to work together closely, we built a good rapport over time. I always enjoyed our conversations about cricket, sports, and many other topics. Those small discussions made the workplace more enjoyable and helped strengthen the team bond as well.\n\nIts people like you who help create a friendly and collaborative team environment.\n\nThank you for all the good conversations and interactions. Wishing you happiness, success, and all the very best for your future.\n\nTake care, Vishnu Chetta!\n😊",
   },
+  {
+    id: 19,
+    name: "Rashmi Ranjan Padhi",
+    mentionName: "Ranjan",
+    number: "19",
+    accent: "blue",
+    message: "Hi Ranjan,\n\nI wanted to thank you for everything. I have truly enjoyed working with you and the SPARQ team. Thank you so much for putting your trust and belief in me.\n\nI especially appreciate how you always stepped up and had our backs whenever there were unnecessary pings or distractions. It really meant a lot to me and showed how deeply you care about the team. That is a hallmark of great leadership.\n\nThanks again for everything, and I wish you all the very best!",
+  },
 ];
