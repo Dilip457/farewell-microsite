@@ -20,34 +20,22 @@ body {
 
 /* ---------- editorial typography ---------- */
 
-/* HUD micro-type — the technical interface layer */
 .section-label {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.38em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: rgba(190, 210, 240, 0.5);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.section-label::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(160, 190, 240, 0.28), transparent);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .hero-title {
   font-weight: 650;
-  font-size: clamp(72px, 11.5vw, 184px);
-  letter-spacing: -0.062em;
-  line-height: 0.9;
+  font-size: clamp(64px, 10vw, 160px);
+  letter-spacing: -0.06em;
+  line-height: 0.92;
 }
 
-/* the second beat of the title — a lit, slightly gradient word */
+/* the second beat of the title — lit, with a soft blue/violet gradient */
 .hero-accent {
   background: linear-gradient(96deg, #f2f6ff 0%, #a9c9ff 52%, #b79bff 100%);
   -webkit-background-clip: text;
@@ -79,7 +67,7 @@ body {
      translucent fill + border + inner highlight instead */
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
+  border-radius: 22px;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
@@ -93,13 +81,12 @@ body {
 
 .glass-card:hover,
 .glass-card:focus-visible {
-  border-color: rgba(150, 195, 255, 0.42);
+  border-color: rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.075);
   box-shadow:
     0 34px 80px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 0 0 1px rgba(140, 190, 255, 0.14),
-    0 0 70px var(--card-glow, rgba(125, 184, 255, 0.18));
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 60px var(--card-glow, rgba(125, 184, 255, 0.08));
 }
 
 .glass-card:focus-visible {
@@ -240,14 +227,13 @@ body {
 
 .modal-panel {
   background: linear-gradient(135deg, rgba(30, 40, 60, 0.72), rgba(15, 15, 25, 0.82));
-  border: 1px solid rgba(150, 195, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 26px;
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   box-shadow:
     0 60px 140px rgba(0, 0, 0, 0.65),
-    0 0 0 1px rgba(140, 190, 255, 0.1),
-    0 0 110px rgba(110, 150, 255, 0.16),
+    0 0 90px rgba(110, 150, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -333,313 +319,12 @@ body {
   }
 }
 
-/* ---------- HUD micro-type ---------- */
-
-.hud-meta {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: rgba(190, 210, 240, 0.42);
-}
-
-.hud-dot {
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  margin-right: 9px;
-  border-radius: 50%;
-  background: #8ac4ff;
-  box-shadow: 0 0 12px rgba(138, 196, 255, 0.95);
-  animation: hud-pulse 3.4s ease-in-out infinite;
-}
-
-@keyframes hud-pulse {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 1; }
-}
-
-.card-index {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 9px;
-  letter-spacing: 0.24em;
-  color: rgba(190, 210, 240, 0.34);
-}
-
-/* ---------- signature 3D object: orbital rings ---------- */
-
-.ring-object {
-  position: relative;
-  width: min(42vw, 420px);
-  height: min(42vw, 420px);
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  animation: object-float 14s ease-in-out infinite;
-}
-
-.ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(150, 195, 255, 0.32);
-  box-shadow:
-    inset 0 0 40px rgba(120, 170, 255, 0.14),
-    0 0 30px rgba(120, 170, 255, 0.12);
-}
-
-/* a lit node riding each ring — the small moving light that sells the 3D */
-.ring::after {
-  content: "";
-  position: absolute;
-  top: -3px;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  margin-left: -3px;
-  border-radius: 50%;
-  background: #dbe9ff;
-  box-shadow: 0 0 16px rgba(160, 200, 255, 0.95);
-}
-
-.ring-a {
-  animation: ring-spin-a 17s linear infinite;
-}
-.ring-b {
-  border-color: rgba(170, 150, 255, 0.3);
-  box-shadow:
-    inset 0 0 40px rgba(150, 120, 255, 0.16),
-    0 0 34px rgba(120, 170, 255, 0.16),
-    0 0 60px rgba(200, 120, 255, 0.1);
-  animation: ring-spin-b 24s linear infinite reverse;
-}
-
-/* iridescent node — a warmer light so the rings read as holographic */
-.ring-b::after {
-  background: #ffd9f2;
-  box-shadow: 0 0 18px rgba(255, 170, 240, 0.95);
-}
-.ring-c {
-  border-color: rgba(120, 200, 255, 0.22);
-  animation: ring-spin-c 31s linear infinite;
-}
-
-@keyframes ring-spin-a {
-  from { transform: rotateX(74deg) rotateZ(0deg); }
-  to   { transform: rotateX(74deg) rotateZ(360deg); }
-}
-@keyframes ring-spin-b {
-  from { transform: rotateX(68deg) rotateY(40deg) rotateZ(0deg); }
-  to   { transform: rotateX(68deg) rotateY(40deg) rotateZ(360deg); }
-}
-@keyframes ring-spin-c {
-  from { transform: rotateX(64deg) rotateY(-36deg) rotateZ(0deg); }
-  to   { transform: rotateX(64deg) rotateY(-36deg) rotateZ(360deg); }
-}
-
-.ring-core {
-  position: absolute;
-  inset: 39%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 40% 35%,
-    rgba(190, 220, 255, 0.85),
-    rgba(110, 150, 255, 0.28) 46%,
-    rgba(60, 90, 200, 0) 72%
-  );
-  filter: blur(7px);
-  box-shadow: 0 0 90px rgba(120, 170, 255, 0.45);
-  animation: core-pulse 6.5s ease-in-out infinite;
-}
-
-@keyframes core-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.85; }
-  50%      { transform: scale(1.08); opacity: 1; }
-}
-
-@keyframes object-float {
-  0%, 100% { transform: translateY(-10px) rotate(0.6deg); }
-  50%      { transform: translateY(14px) rotate(-0.8deg); }
-}
-
-/* ---------- scene shift: the violet wash that belongs to the wall ---------- */
-
-.scene-glow {
-  position: absolute;
-  top: -8%;
-  right: -16%;
-  width: min(72vw, 780px);
-  height: min(72vw, 780px);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(140, 95, 220, 0.15),
-    rgba(90, 70, 190, 0.05) 45%,
-    transparent 70%
-  );
-  pointer-events: none;
-}
-
-/* ---------- oversized ghost + hollow display type ---------- */
-
-/* huge word bleeding off the edge, as a background layer */
-.ghost-word {
-  position: absolute;
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 0.78;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(150, 185, 235, 0.11);
-  pointer-events: none;
-  user-select: none;
-  white-space: nowrap;
-}
-
-/* hollow display text — used on the second line of a heading */
-.text-hollow {
-  color: transparent;
-  -webkit-text-stroke: 1.2px rgba(185, 210, 250, 0.38);
-}
-
-/* ---------- metrics strip ---------- */
-
-.metric {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 9px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(190, 210, 240, 0.52);
-  white-space: nowrap;
-}
-
-.metric b {
-  font-weight: 500;
-  color: rgba(225, 238, 255, 0.92);
-}
-
-.metric-rule {
-  width: 18px;
-  height: 1px;
-  background: rgba(160, 190, 240, 0.22);
-}
-
-/* ---------- hairline side index (desktop only) ---------- */
-
-.side-index {
-  display: none;
-}
-
-@media (min-width: 1280px) {
-  .side-index {
-    position: fixed;
-    left: 28px;
-    top: 50%;
-    z-index: 40;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.side-index-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 0;
-  border-top: 1px solid rgba(160, 190, 240, 0.13);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 9px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(190, 210, 240, 0.4);
-  transition: color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.side-index-item:last-child {
-  border-bottom: 1px solid rgba(160, 190, 240, 0.13);
-}
-
-.side-index-item:hover {
-  color: rgba(220, 235, 255, 0.85);
-}
-
-.side-index-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(150, 185, 235, 0.3);
-  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.side-index-item[data-active="true"] {
-  color: rgba(230, 242, 255, 0.95);
-}
-
-.side-index-item[data-active="true"] .side-index-dot {
-  background: #8ac4ff;
-  box-shadow: 0 0 12px rgba(138, 196, 255, 0.95);
-}
-
-.side-index-arrow {
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.side-index-item:hover .side-index-arrow,
-.side-index-item[data-active="true"] .side-index-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* ---------- underline field (search, form inputs) ---------- */
-
-.underline-field {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid rgba(160, 190, 240, 0.24);
-  padding: 12px 0 12px 30px;
-  font-size: 15px;
-  color: #f5f5f5;
-  outline: none;
-  transition: border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.underline-field::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.underline-field:focus {
-  border-bottom-color: rgba(138, 196, 255, 0.7);
-}
-
-/* ---------- iridescent edge (glass panels) ---------- */
-
-.iridescent-edge {
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(138, 196, 255, 0.5) 22%,
-    rgba(200, 150, 255, 0.55) 52%,
-    rgba(255, 170, 220, 0.4) 76%,
-    transparent
-  );
-  pointer-events: none;
-}
-
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
-  .orb-a, .orb-b, .leak-a, .leak-b, .grain, .scroll-dot, .ghost-name-inner,
-  .ring, .ring-core, .ring-object, .hud-dot {
+  .orb-a, .orb-b, .leak-a, .leak-b, .grain, .scroll-dot, .ghost-name-inner {
     animation: none !important;
   }
 

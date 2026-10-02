@@ -63,8 +63,8 @@ export default function MessageForAuthor({ person }) {
       className="relative z-10 mt-12 w-full"
       aria-label="Leave a message for the author"
     >
-      <div className="relative border-t border-[rgba(160,190,240,0.16)] pt-7">
-        <span className="hud-meta mb-5 block">Plot twist</span>
+      <div className="rounded-3xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] p-7 sm:p-8">
+        <p className="section-label mb-5">Plot twist</p>
 
         <h3 className="text-[clamp(22px,3.4vw,30px)] font-semibold leading-[1.05] tracking-[-0.04em] text-[#f5f5f5]">
           The floor
@@ -90,18 +90,18 @@ export default function MessageForAuthor({ person }) {
             </label>
             <textarea
               id="reply-message"
-              rows={3}
+              rows={4}
               value={text}
               maxLength={2000}
               onChange={(e) => setText(e.target.value)}
               placeholder="A memory, a wish, anything you'd like to say…"
-              className="w-full resize-y border-0 border-b border-[rgba(160,190,240,0.24)] bg-transparent py-4 text-[15px] leading-relaxed text-[#f5f5f5] outline-none transition-colors duration-500 placeholder:text-[rgba(255,255,255,0.3)] focus:border-[rgba(138,196,255,0.7)]"
+              className="w-full resize-y rounded-2xl border border-[rgba(255,255,255,0.14)] bg-[rgba(255,255,255,0.03)] px-5 py-4 text-[15px] leading-relaxed text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-[rgba(255,255,255,0.3)] focus:border-[rgba(125,184,255,0.5)]"
             />
 
             <div className="mt-5 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <span className="metric">
+              <p className="text-[11px] tracking-wide text-[rgba(255,255,255,0.3)]">
                 {text.length}/2000
-              </span>
+              </p>
               <button
                 type="button"
                 className="pill-button disabled:cursor-not-allowed disabled:opacity-40"

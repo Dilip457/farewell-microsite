@@ -1,7 +1,5 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import OrbitalRings from "./OrbitalRings";
-import { colleagues } from "../data/colleagues";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -21,107 +19,51 @@ export default function HeroSection() {
     offset: ["start start", "end start"],
   });
 
-  // the hero scene drifts up and dissolves as the wall scene takes over
-  const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-18vh"]);
+  // hero drifts up, scales down and fades as you scroll into section 02
+  const y = useTransform(scrollYProgress, [0, 1], ["0vh", "-16vh"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const objectY = useTransform(scrollYProgress, [0, 1], ["0vh", "10vh"]);
-
-  const total = colleagues.length;
+  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
   return (
     <section
-      id="top"
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
       aria-label="Introduction"
     >
-      {/* oversized outlined word bleeding off the right edge — background layer */}
-      <span
-        aria-hidden="true"
-        className="ghost-word pointer-events-none right-[-6%] top-[8%] hidden text-[26vw] sm:block"
-      >
-        SPARQ
-      </span>
-
-      {/* cinematic frame — a hairline inset around the scene */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-4 hidden rounded-[30px] border border-[rgba(255,255,255,0.05)] sm:block"
-      />
-
-      {/* vertical technical label on the left edge */}
-      <motion.span
-        {...rise(1.0)}
-        className="hud-meta absolute left-7 top-1/2 hidden origin-left -translate-y-1/2 rotate-90 whitespace-nowrap xl:block"
-      >
-        FAREWELL TRANSMISSION — 2026
-      </motion.span>
-
       <motion.div
         style={reduced ? undefined : { y, scale, opacity }}
-        className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 pb-24 pt-28 sm:px-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:px-24 lg:pb-0 lg:pt-0"
+        className="mx-auto w-full max-w-6xl px-6 sm:px-10 lg:px-14"
       >
-        {/* left — the words */}
-        <div>
-          <motion.p {...rise(0.1)} className="section-label mb-8 max-w-[220px]">
-            01 / Signing Off
-          </motion.p>
+        <motion.p {...rise(0.1)} className="section-label mb-8">
+          01 / Signing Off
+        </motion.p>
 
-          <motion.h1 {...rise(0.28)} className="hero-title text-[#f5f5f5]">
-            One Last
-            <br />
-            <span className="hero-accent">Ping :)</span>
-          </motion.h1>
+        <motion.h1 {...rise(0.28)} className="hero-title text-[#f5f5f5]">
+          One Last
+          <br />
+          <span className="hero-accent">Ping :)</span>
+        </motion.h1>
 
-          <motion.p
-            {...rise(0.5)}
-            className="mt-10 max-w-xl text-[15px] leading-relaxed tracking-wide text-[rgba(255,255,255,0.55)] sm:text-base"
-          >
-            Some journeys end, but the people and the moments that made them
-            meaningful stay with us. Before I move forward, I wanted to leave a
-            small note for the people who made this journey memorable.
-          </motion.p>
-
-          {/* metrics strip — states the whole privacy model at a glance */}
-          <motion.div {...rise(0.72)} className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-3">
-            <span className="metric">
-              <b>{total}</b> Notes
-            </span>
-            <span className="metric-rule" aria-hidden="true" />
-            <span className="metric">
-              <b>{total - 1}</b> Sealed
-            </span>
-            <span className="metric-rule" aria-hidden="true" />
-            <span className="metric">
-              <b>1</b> For You
-            </span>
-          </motion.div>
-        </div>
-
-        {/* right — the signature object */}
-        <motion.div
-          style={reduced ? undefined : { y: objectY }}
-          className="relative flex items-center justify-center lg:justify-end"
+        <motion.p
+          {...rise(0.5)}
+          className="mt-10 max-w-xl text-[15px] leading-relaxed tracking-wide text-[rgba(255,255,255,0.55)] sm:text-base"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.86 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 2.2, delay: 0.5, ease: EASE }}
-          >
-            <OrbitalRings className="scale-[0.72] sm:scale-90 lg:scale-100" />
-          </motion.div>
-        </motion.div>
+          Some journeys end, but the people and the moments that made them
+          meaningful stay with us. Before I move forward, I wanted to leave a
+          small note for the people who made this journey memorable.
+        </motion.p>
       </motion.div>
 
-      {/* scroll cue */}
+      {/* scroll indicator */}
       <motion.a
         href="#people"
         aria-label="Scroll to explore"
-        {...rise(1.15)}
-        className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
+        {...rise(1.1)}
+        className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3"
       >
-        <span className="hud-meta">SCROLL TO EXPLORE</span>
+        <span className="text-[10px] font-medium uppercase tracking-[0.4em] text-[rgba(255,255,255,0.4)]">
+          Scroll to explore
+        </span>
         <svg
           width="10"
           height="18"

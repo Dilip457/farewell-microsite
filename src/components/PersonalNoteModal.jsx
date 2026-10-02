@@ -150,9 +150,6 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
             transition={{ duration: 0.8, ease: EASE }}
             style={{ transformPerspective: 1400 }}
           >
-            {/* iridescent top edge — the glass panel's lit rim */}
-            <span aria-hidden="true" className="iridescent-edge" />
-
             {/* airy floating name — a large soft ghost of the reader's name
                 drifting behind the message while they read. Sticky + zero
                 height so it stays in view for the whole note; content sits
@@ -165,13 +162,13 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
 
             {/* content layer — above the ghost */}
             <div className="relative z-[1] flex flex-col">
-            {/* header — HUD metadata row */}
-            <div className="mb-10 flex items-center justify-between border-b border-[rgba(160,190,240,0.12)] pb-4 sm:mb-14">
-              <span className="hud-meta">
-                NOTE {person.number} <span className="text-[rgba(190,210,240,0.24)]">·</span> PERSONAL
+            {/* header */}
+            <div className="mb-10 flex items-center justify-between sm:mb-14">
+              <span className="text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.5)] sm:text-[11px]">
+                Personal Note
               </span>
               <div className="flex items-center gap-6">
-                <span className="hud-meta hidden sm:inline">
+                <span className="hidden text-[10px] font-medium uppercase tracking-[0.3em] text-[rgba(255,255,255,0.35)] sm:inline">
                   {author.label}
                 </span>
                 <button
@@ -227,8 +224,8 @@ export default function PersonalNoteModal({ person, onClose, enableReply = true 
               transition={{ duration: 0.9, delay: 0.55, ease: EASE }}
               className="mt-14 flex flex-col-reverse items-start justify-between gap-6 border-t border-[rgba(255,255,255,0.1)] pt-7 sm:mt-20 sm:flex-row sm:items-center sm:pt-8"
             >
-              <span className="hud-meta">
-                WITH APPRECIATION
+              <span className="text-[10px] font-medium uppercase tracking-[0.42em] text-[rgba(255,255,255,0.4)]">
+                With appreciation
               </span>
               <button
                 type="button"
