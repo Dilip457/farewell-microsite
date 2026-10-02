@@ -92,7 +92,7 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
         <div className="relative flex items-start justify-between">
           <span
             aria-hidden="true"
-            className="select-none text-[11px] font-medium tracking-[0.3em] text-[rgba(255,255,255,0.22)]"
+            className="card-index select-none opacity-80"
           >
             {person.number}
           </span>
@@ -148,10 +148,14 @@ export default function PersonCard({ person, onSelect, featured = false, sealed 
 
       {/* top row — sequence number + arrow */}
       <div className="relative flex items-start justify-between">
-        {featured ? null : (
+        {featured ? (
+          <span aria-hidden="true" className="card-index select-none text-[rgba(138,196,255,0.6)]">
+            · YOURS ·
+          </span>
+        ) : (
           <span
             aria-hidden="true"
-            className="select-none text-[11px] font-medium tracking-[0.3em] text-[rgba(255,255,255,0.22)]"
+            className="card-index select-none"
           >
             {person.number}
           </span>

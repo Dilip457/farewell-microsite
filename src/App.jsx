@@ -5,6 +5,7 @@ import HeroSection from "./components/HeroSection";
 import PeopleSection from "./components/PeopleSection";
 import PersonalNoteModal from "./components/PersonalNoteModal";
 import PinPrompt from "./components/PinPrompt";
+import HudFrame from "./components/HudFrame";
 import { author, colleagues } from "./data/colleagues";
 import { startSpinningFavicon } from "./lib/spinningFavicon";
 
@@ -90,6 +91,9 @@ export default function App() {
     <div className="relative min-h-screen">
       {/* background pauses its particle field while a note modal is open */}
       <CinematicBackground paused={Boolean(selected)} />
+
+      {/* hairline HUD interface layer */}
+      <HudFrame />
 
       <AnimatePresence mode="wait">
         {preview ? (

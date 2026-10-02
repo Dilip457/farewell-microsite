@@ -52,6 +52,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   if (preview) {
     return (
       <section id="people" aria-label="All notes — author preview" className={sectionClass}>
+        <div aria-hidden="true" className="scene-glow" />
         <motion.p {...heading} className="section-label mb-8">
           02 / All notes — author preview
         </motion.p>
@@ -92,6 +93,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   if (!identity) {
     return (
       <section id="people" aria-label="Find your card" className={sectionClass}>
+        <div aria-hidden="true" className="scene-glow" />
         <motion.p {...heading} className="section-label mb-8">
           02 / A note for you
         </motion.p>
@@ -164,6 +166,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
 
   return (
     <section id="people" aria-label="A note for you" className={sectionClass}>
+      <div aria-hidden="true" className="scene-glow" />
       <motion.p {...heading} className="section-label mb-8">
         02 / A note for you
       </motion.p>
