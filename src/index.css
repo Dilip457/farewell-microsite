@@ -14,7 +14,7 @@ body {
   overflow-x: hidden;
   /* `clip` (where supported) still stops sideways scroll but — unlike
      `hidden` — does NOT create a scroll container, so `position: sticky`
-     keeps working inside the page (the card carousel depends on it) */
+     and scroll-linked effects keep working inside the page */
   overflow-x: clip;
 }
 
@@ -155,19 +155,6 @@ body {
 }
 
 /* ---------- the swirl: a curved 3D wall of cards ---------- */
-
-/* ---------- the carousel: the wall as a scroll-driven 3D swirl ---------- */
-
-/* cards stand taller on the carousel, and always show their action label
-   (on a carousel there is no hover to reveal it) */
-.carousel .glass-card {
-  height: 300px;
-}
-
-.carousel .view-note {
-  opacity: 1;
-  transform: none;
-}
 
 /* the stage provides the perspective the tilted cards live inside */
 .swirl-stage {
