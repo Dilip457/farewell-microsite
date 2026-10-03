@@ -1,5 +1,10 @@
-import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import PersonCard from "./PersonCard";
 import { colleagues } from "../data/colleagues";
 
@@ -15,6 +20,67 @@ const sectionClass =
   "relative z-10 mx-auto w-full max-w-6xl px-6 pb-40 pt-32 sm:px-10 sm:pt-44 lg:px-14";
 
 /**
+ * SwirlTile — one card riding the curved wall.
+ *
+ * The wall is a 3D cylinder: the outer columns lean away from the viewer
+ * and the middle faces you. As the section travels through the viewport the
+ * whole surface tilts up-then-down and the curve deepens, so the cards read
+ * as one flowing ribbon rather than a flat grid. Columns also drift at
+ * slightly different speeds, which is what gives the motion its swirl.
+ *
+ * Only transforms are animated (no layout, no filters) so it stays smooth.
+ */
+function SwirlTile({ i, wide, reduced, progress, children }) {
+  const colOffset = (i % 3) - 1; // -1 | 0 | 1
+
+  // resting curve: outer columns angled away, middle square to the viewer
+  const curveY = wide ? colOffset * 13 : 0;
+  // the curve deepens as the wall moves through the viewport
+  const spinY = useTransform(progress, [0, 1], [curveY, curveY + colOffset * 9]);
+  // the whole surface tilts up-then-down — the swirl
+  const rotateX = useTransform(progress, [0, 1], [9, -9]);
+  // per-column parallax drift (outer columns travel further)
+  const drift = 1 + colOffset * 0.4;
+  const y = useTransform(progress, [0, 1], [34 * drift, -24 * drift]);
+  const scale = useTransform(
+    progress,
+    [0, 0.45, 1],
+    [0.93 - Math.abs(colOffset) * 0.012, 1 - Math.abs(colOffset) * 0.018, 0.95]
+  );
+  const opacity = useTransform(progress, [0, 0.12, 0.85, 1], [0.3, 0.9, 1, 0.45]);
+
+  if (reduced) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.7, ease: EASE }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      style={{ rotateX, rotateY: spinY, y, scale, opacity, transformStyle: "preserve-3d" }}
+      className="will-change-transform"
+    >
+      {/* entrance — the card swings in from its own side and settles onto the curve */}
+      <motion.div
+        initial={{ opacity: 0, y: 60, rotateY: colOffset * 22, scale: 0.9, filter: "blur(6px)" }}
+        whileInView={{ opacity: 1, y: 0, rotateY: 0, scale: 1, filter: "blur(0px)" }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 1.15, delay: (i % 3) * 0.12, ease: EASE }}
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/**
  * PeopleSection — three modes:
  *  - pick (no identity yet): the full card wall IS the gate — every tile is
  *    clickable with "This is me"; clicking your card reveals your note
@@ -27,6 +93,23 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   const reduced = useReducedMotion();
   const [query, setQuery] = useState("");
 
+  // the swirl is a desktop composition; small screens get a calm fade
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const on = () => setWide(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+
+  // one shared scroll progress for the whole wall
+  const gridRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: gridRef,
+    offset: ["start end", "end start"],
+  });
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return colleagues;
@@ -34,24 +117,21 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   }, [query]);
 
   const tile = (person, i, card) => (
-    <motion.div
+    <SwirlTile
       key={person.id}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 70, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 1.1,
-        delay: (i % 3) * 0.12,
-        ease: EASE,
-      }}
+      i={i}
+      wide={wide}
+      reduced={reduced}
+      progress={scrollYProgress}
     >
       {card}
-    </motion.div>
+    </SwirlTile>
   );
 
   if (preview) {
     return (
       <section id="people" aria-label="All notes — author preview" className={sectionClass}>
+        <div aria-hidden="true" className="wall-glow" />
         <motion.p {...heading} className="section-label mb-8">
           02 / All notes — author preview
         </motion.p>
@@ -75,7 +155,10 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
           colleagues will each see their own card alone.
         </motion.p>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          ref={gridRef}
+          className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {colleagues.map((person, i) =>
             tile(
               person,
@@ -92,6 +175,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   if (!identity) {
     return (
       <section id="people" aria-label="Find your card" className={sectionClass}>
+        <div aria-hidden="true" className="wall-glow" />
         <motion.p {...heading} className="section-label mb-8">
           02 / A note for you
         </motion.p>
@@ -134,7 +218,10 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
           />
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          ref={gridRef}
+          className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {filtered.map((person, i) =>
             tile(
               person,
@@ -164,6 +251,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
 
   return (
     <section id="people" aria-label="A note for you" className={sectionClass}>
+      <div aria-hidden="true" className="wall-glow" />
       <motion.p {...heading} className="section-label mb-8">
         02 / A note for you
       </motion.p>
@@ -188,7 +276,10 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
         you're ready.
       </motion.p>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+          ref={gridRef}
+          className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        >
         {colleagues.map((person, i) =>
           tile(
             person,

@@ -66,11 +66,12 @@ body {
      scroll frame caused major jank; the glass look is kept via the
      translucent fill + border + inner highlight instead */
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 22px;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 34px -16px rgba(120, 170, 255, 0.3);
   transition:
     border-color 0.55s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
@@ -147,6 +148,32 @@ body {
 .glass-card:focus-visible .view-note {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ---------- the swirl: a curved 3D wall of cards ---------- */
+
+/* the stage provides the perspective the tilted cards live inside */
+.swirl-stage {
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+
+/* deep-space glow the wall floats in */
+.wall-glow {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: min(92vw, 940px);
+  height: min(62vw, 640px);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(90, 130, 220, 0.14),
+    rgba(120, 90, 200, 0.06) 46%,
+    transparent 72%
+  );
+  pointer-events: none;
 }
 
 /* ---------- background layers ---------- */
