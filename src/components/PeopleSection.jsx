@@ -20,36 +20,45 @@ const sectionClass =
   "relative z-10 mx-auto w-full max-w-6xl px-6 pb-40 pt-32 sm:px-10 sm:pt-44 lg:px-14";
 
 /**
- * SwirlTile — one card riding the curved wall.
+ * SwirlTile — one card riding the swirl.
  *
- * The wall is a 3D cylinder: the outer columns lean away from the viewer
- * and the middle faces you. As the section travels through the viewport the
- * whole surface tilts up-then-down and the curve deepens, so the cards read
- * as one flowing ribbon rather than a flat grid. Columns also drift at
- * slightly different speeds, which is what gives the motion its swirl.
+ * Each card tracks its OWN journey through the viewport: rising from the
+ * bottom it sits further away and tilts back, at the middle of the screen it
+ * faces the viewer, comes forward and grows, and as it leaves the top it
+ * tilts away again. Added to the per-column curve (outer columns angled
+ * outward), the wall reads as a cylinder of glass panels sweeping past.
  *
- * Only transforms are animated (no layout, no filters) so it stays smooth.
+ * Because every card animates as it crosses the screen, the effect is
+ * visible on any window size — not just when the whole section travels.
+ * Transform-only (no layout, no filters) so it stays smooth.
  */
-function SwirlTile({ i, wide, reduced, progress, children }) {
-  // wide screens: the wall curves across three columns (outer ones lean away)
-  // narrow screens: single column, so the card simply tilts as it travels
-  const colOffset = wide ? (i % 3) - 1 : 0; // -1 | 0 | 1
+function SwirlTile({ i, wide, reduced, children }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
 
-  // resting curve
-  const curveY = colOffset * 15;
-  // the curve deepens as the wall moves through the viewport
-  const spinY = useTransform(progress, [0, 1], [curveY, curveY + colOffset * 10]);
-  // the whole surface tilts up-then-down — the swirl
-  const rotateX = useTransform(progress, [0, 1], wide ? [10, -10] : [7, -7]);
-  // per-column parallax drift (outer columns travel further)
-  const drift = 1 + colOffset * 0.45;
-  const y = useTransform(progress, [0, 1], [40 * drift, -28 * drift]);
-  const scale = useTransform(
-    progress,
-    [0, 0.45, 1],
-    [0.92 - Math.abs(colOffset) * 0.012, 1 - Math.abs(colOffset) * 0.02, 0.94]
+  const colOffset = wide ? (i % 3) - 1 : 0; // -1 | 0 | 1
+  const curve = colOffset * 24; // the resting cylinder curve
+
+  // tilt as it travels: leaning back at the edges, square-on at the centre
+  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [-20, 0, 20]);
+  // column curve, plus a little extra turn as it passes
+  const rotateY = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [curve + colOffset * 10 + 9, curve, curve - colOffset * 10 - 9]
   );
-  const opacity = useTransform(progress, [0, 0.12, 0.85, 1], [0.25, 0.92, 1, 0.4]);
+  // depth: the card comes toward the viewer as it crosses the centre
+  const z = useTransform(scrollYProgress, [0, 0.5, 1], [-160, 70, -160]);
+  const y = useTransform(scrollYProgress, [0, 0.5, 1], [26, 0, -26]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.03, 0.9]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.12, 0.88, 1],
+    [0.35, 1, 1, 0.35]
+  );
 
   if (reduced) {
     return (
@@ -66,18 +75,11 @@ function SwirlTile({ i, wide, reduced, progress, children }) {
 
   return (
     <motion.div
-      style={{ rotateX, rotateY: spinY, y, scale, opacity, transformStyle: "preserve-3d" }}
+      ref={ref}
+      style={{ rotateX, rotateY, z, y, scale, opacity, transformStyle: "preserve-3d" }}
       className="will-change-transform"
     >
-      {/* entrance — the card swings in from its own side and settles onto the curve */}
-      <motion.div
-        initial={{ opacity: 0, y: 60, rotateY: colOffset * 26, scale: 0.9, filter: "blur(6px)" }}
-        whileInView={{ opacity: 1, y: 0, rotateY: 0, scale: 1, filter: "blur(0px)" }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 1.15, delay: (i % 3) * 0.12, ease: EASE }}
-      >
-        {children}
-      </motion.div>
+      {children}
     </motion.div>
   );
 }
@@ -105,13 +107,6 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
     return () => mq.removeEventListener("change", on);
   }, []);
 
-  // one shared scroll progress for the whole wall
-  const gridRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: gridRef,
-    offset: ["start end", "end start"],
-  });
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return colleagues;
@@ -119,13 +114,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   }, [query]);
 
   const tile = (person, i, card) => (
-    <SwirlTile
-      key={person.id}
-      i={i}
-      wide={wide}
-      reduced={reduced}
-      progress={scrollYProgress}
-    >
+    <SwirlTile key={person.id} i={i} wide={wide} reduced={reduced}>
       {card}
     </SwirlTile>
   );
@@ -157,10 +146,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
           colleagues will each see their own card alone.
         </motion.p>
 
-        <div
-          ref={gridRef}
-          className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {colleagues.map((person, i) =>
             tile(
               person,
@@ -220,10 +206,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
           />
         </motion.div>
 
-        <div
-          ref={gridRef}
-          className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((person, i) =>
             tile(
               person,
@@ -278,10 +261,7 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
         you're ready.
       </motion.p>
 
-      <div
-          ref={gridRef}
-          className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-        >
+      <div className="swirl-stage grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {colleagues.map((person, i) =>
           tile(
             person,
