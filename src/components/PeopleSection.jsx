@@ -31,23 +31,25 @@ const sectionClass =
  * Only transforms are animated (no layout, no filters) so it stays smooth.
  */
 function SwirlTile({ i, wide, reduced, progress, children }) {
-  const colOffset = (i % 3) - 1; // -1 | 0 | 1
+  // wide screens: the wall curves across three columns (outer ones lean away)
+  // narrow screens: single column, so the card simply tilts as it travels
+  const colOffset = wide ? (i % 3) - 1 : 0; // -1 | 0 | 1
 
-  // resting curve: outer columns angled away, middle square to the viewer
-  const curveY = wide ? colOffset * 13 : 0;
+  // resting curve
+  const curveY = colOffset * 15;
   // the curve deepens as the wall moves through the viewport
-  const spinY = useTransform(progress, [0, 1], [curveY, curveY + colOffset * 9]);
+  const spinY = useTransform(progress, [0, 1], [curveY, curveY + colOffset * 10]);
   // the whole surface tilts up-then-down — the swirl
-  const rotateX = useTransform(progress, [0, 1], [9, -9]);
+  const rotateX = useTransform(progress, [0, 1], wide ? [10, -10] : [7, -7]);
   // per-column parallax drift (outer columns travel further)
-  const drift = 1 + colOffset * 0.4;
-  const y = useTransform(progress, [0, 1], [34 * drift, -24 * drift]);
+  const drift = 1 + colOffset * 0.45;
+  const y = useTransform(progress, [0, 1], [40 * drift, -28 * drift]);
   const scale = useTransform(
     progress,
     [0, 0.45, 1],
-    [0.93 - Math.abs(colOffset) * 0.012, 1 - Math.abs(colOffset) * 0.018, 0.95]
+    [0.92 - Math.abs(colOffset) * 0.012, 1 - Math.abs(colOffset) * 0.02, 0.94]
   );
-  const opacity = useTransform(progress, [0, 0.12, 0.85, 1], [0.3, 0.9, 1, 0.45]);
+  const opacity = useTransform(progress, [0, 0.12, 0.85, 1], [0.25, 0.92, 1, 0.4]);
 
   if (reduced) {
     return (
@@ -69,7 +71,7 @@ function SwirlTile({ i, wide, reduced, progress, children }) {
     >
       {/* entrance — the card swings in from its own side and settles onto the curve */}
       <motion.div
-        initial={{ opacity: 0, y: 60, rotateY: colOffset * 22, scale: 0.9, filter: "blur(6px)" }}
+        initial={{ opacity: 0, y: 60, rotateY: colOffset * 26, scale: 0.9, filter: "blur(6px)" }}
         whileInView={{ opacity: 1, y: 0, rotateY: 0, scale: 1, filter: "blur(0px)" }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 1.15, delay: (i % 3) * 0.12, ease: EASE }}
@@ -93,10 +95,10 @@ export default function PeopleSection({ identity, preview = false, onSelect, onP
   const reduced = useReducedMotion();
   const [query, setQuery] = useState("");
 
-  // the swirl is a desktop composition; small screens get a calm fade
+  // the curve needs three columns; from 768px up the wall swirls
   const [wide, setWide] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
+    const mq = window.matchMedia("(min-width: 768px)");
     const on = () => setWide(mq.matches);
     on();
     mq.addEventListener("change", on);
